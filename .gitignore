@@ -1,0 +1,5 @@
+Examples_loaders/*.o
+.deps/*Po
+*.o
+ARM_runner_example
+Examples_loader/example*
