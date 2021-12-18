@@ -22,6 +22,6 @@ void header_read(Elf32_Ehdr *ehdr);
  * @return true if the magic number corresponds to ELF
  * @return false if the magic number didn't corresponds to ELF
  */
-bool magic_number(Elf32_Ehdr *ehdr);
+bool is_magic_number(Elf32_Ehdr *ehdr);
 
 #endif
