@@ -1,14 +1,9 @@
 #include "affichage.h"
 
-void print_type_name(char *type)
-{
-  printf("%s:\t\t\t\t\t\t", type);
-}
-
 void print_magic(unsigned char *ident)
 {
   print_isElfType(ident);
-  printf("Magic:\t");
+  printf("  Magic:\t");
   for (int i = 0; i < 16; i++)
   {
     printf("%.2x ", ident[i]);
@@ -19,10 +14,10 @@ void print_magic(unsigned char *ident)
 void print_isElfType(unsigned char *ident)
 {
   if (is_ELF_header(ident))
-    printf("En-tête du fichier ELF : \n");
+    printf("ELF Header:\n");
   else
   {
-    printf("Erreur ce fichier n'est pas au format ELF\n");
+    printf("Error: Not an ELF - it has the wrong magic bytes at the start\n");
     exit(EXIT_FAILURE);
   }
 }
@@ -38,12 +33,12 @@ void print_class(unsigned char *ident)
   switch (ident[EI_CLASS])
   {
   case ELFCLASS32:
-    print_type_name("Class");
+    printf("  Class:\t\t\t\t");
     printf("ELF32\n");
     break;
 
   case ELFCLASS64:
-    print_type_name("Class");
+    printf("  Class:\t\t\t\t");
     printf("ELF64\n");
     break;
 
@@ -59,12 +54,12 @@ void print_data(unsigned char *ident)
   switch (ident[EI_DATA])
   {
   case ELFDATA2LSB:
-    print_type_name("Data");
+    printf("  Data:\t\t\t\t\t");
     printf("Little-Endian\n");
     break;
 
   case ELFDATA2MSB:
-    print_type_name("Data");
+    printf("  Data:\t\t\t\t\t");
     printf("Big-Endian\n");
     break;
 
@@ -85,7 +80,7 @@ void print_version_id(unsigned char *ident)
     break;
 
   case EV_CURRENT:
-    print_type_name("Version");
+    printf("  Version:\t\t\t\t");
     printf("1 (current)\n");
     break;
   }
@@ -93,7 +88,7 @@ void print_version_id(unsigned char *ident)
 
 void print_os(unsigned char *ident)
 {
-  print_type_name("OS/ABI");
+  printf("  OS/ABI:\t\t\t\t");
   switch (ident[EI_OSABI])
   {
   case ELFOSABI_NONE | ELFOSABI_SYSV:
@@ -140,13 +135,13 @@ void print_os(unsigned char *ident)
 
 void print_abi_version(unsigned char *ident)
 {
-  print_type_name("ABI Version");
+  printf("  ABI Version:\t\t\t\t");
   printf("%hx\n", ident[EI_ABIVERSION]);
 }
 
 void print_type(Elf32_Half type)
 {
-  print_type_name("Type");
+  printf("  Type:\t\t\t\t\t");
   switch (type)
   {
   case ET_REL:
@@ -172,92 +167,92 @@ void print_machine(Elf32_Half machine)
   switch (machine)
   {
   case EM_M32:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("AT&T WE 32100\n");
     break;
 
   case EM_SPARC:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Sun Microsystems SPARC\n");
     break;
 
   case EM_386:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Intel 80386\n");
     break;
 
   case EM_68K:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Motorola 68000\n");
     break;
 
   case EM_88K:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Motorola 88000\n");
     break;
 
   case EM_860:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Intel 80860\n");
     break;
 
   case EM_MIPS:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("MIPS RS3000\n");
     break;
 
   case EM_PARISC:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("HP/PA\n");
     break;
 
   case EM_SPARC32PLUS:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("SPARC with enhanced instruction set\n");
     break;
 
   case EM_PPC:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("PowerPC\n");
     break;
 
   case EM_PPC64:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("PowerPC 64-bit\n");
     break;
 
   case EM_S390:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("IBM S/390\n");
     break;
 
   case EM_ARM:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Advanced RISC Machines (ARM)\n");
     break;
 
   case EM_SH:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Renesas SuperH\n");
     break;
 
   case EM_SPARCV9:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("SPARC v9 64-bit\n");
     break;
 
   case EM_IA_64:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("Intel Itanium\n");
     break;
 
   case EM_X86_64:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("AMD x86-64\n");
     break;
 
   case EM_VAX:
-    print_type_name("Machine");
+    printf("  Machine:\t\t\t\t");
     printf("DEC Vax\n");
     break;
 
@@ -270,7 +265,7 @@ void print_machine(Elf32_Half machine)
 
 void print_version(Elf32_Word version)
 {
-  print_type_name("Version");
+  printf("  Version:\t\t\t\t");
   switch (version)
   {
   case EV_NONE:
@@ -284,34 +279,34 @@ void print_version(Elf32_Word version)
 
 void print_adresse_offset(Elf32_Ehdr *ehdr)
 {
-  print_type_name("Entry point adress");
+  printf("  Entry point adress:\t\t\t");
   printf("0x%hx\n", ehdr->e_entry);
 
-  print_type_name("Start of program headers");
+  printf("  Start of program headers:\t\t");
   printf("%hx (bytes into file)\n", ehdr->e_phoff);
 
-  print_type_name("Start of section headers");
+  printf("  Start of section headers:\t\t");
   printf("%hx (bytes into file)\n", ehdr->e_shoff);
 
-  print_type_name("Flags");
+  printf("  Flags:\t\t\t\t");
   printf("%hx\n", ehdr->e_flags);
 
-  print_type_name("Size of this header");
+  printf("  Size of this header:\t\t\t");
   printf("%hx(bytes)\n", ehdr->e_ehsize);
 
-  print_type_name("Size of program headers");
+  printf("  Size of program headers:\t\t");
   printf("%hx (bytes)\n", ehdr->e_phentsize);
 
-  print_type_name("Number of program headers");
+  printf("  Number of program headers:\t\t");
   printf("%d\n", ehdr->e_phnum);
 
-  print_type_name("Size of section headers");
+  printf("  Size of section headers:\t\t");
   printf("%hx (bytes)\n", ehdr->e_shentsize);
 
-  print_type_name("Number of section headers");
+  printf("  Number of section headers:\t\t");
   printf("%d\n", ehdr->e_shnum);
 
-  print_type_name("Section header string table index");
+  printf("  Section header string table index:\t");
   printf("%d\n", ehdr->e_shstrndx);
 }
 
