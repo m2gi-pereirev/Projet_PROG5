@@ -6,7 +6,6 @@
 #include <stdbool.h>
 #include <elf.h>
 
-void print_type_name(char *type);
 void print_magic(unsigned char *ident);
 void print_isElfType(unsigned char *ident);
 void print_class(unsigned char *ident);
