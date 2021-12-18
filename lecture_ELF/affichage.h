@@ -17,6 +17,7 @@ void print_type(Elf32_Half type);
 void print_machine(Elf32_Half machine);
 void print_version(Elf32_Word version);
 void print_adresse_offset(Elf32_Ehdr *ehdr);
+void print_flags(Elf32_Word flags);
 
 /**
  * @brief Print the header of the file

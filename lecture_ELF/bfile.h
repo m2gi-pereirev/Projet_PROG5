@@ -13,7 +13,7 @@
  * @param nb_bit number of bits to be read
  * @return ** int the bit of the file
  */
-int bitread(size_t nb_bit);
+uint32_t bitread(size_t nb_bit);
 
 /**
  * @brief Open a file to read it bit per bit

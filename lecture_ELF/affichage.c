@@ -283,31 +283,41 @@ void print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("0x%hx\n", ehdr->e_entry);
 
   printf("  Start of program headers:\t\t");
-  printf("%hx (bytes into file)\n", ehdr->e_phoff);
+  printf("%d (bytes into file)\n", ehdr->e_phoff);
 
   printf("  Start of section headers:\t\t");
-  printf("%hx (bytes into file)\n", ehdr->e_shoff);
+  printf("%d (bytes into file)\n", ehdr->e_shoff);
 
-  printf("  Flags:\t\t\t\t");
-  printf("%hx\n", ehdr->e_flags);
+  print_flags(ehdr->e_flags);
 
   printf("  Size of this header:\t\t\t");
-  printf("%hx(bytes)\n", ehdr->e_ehsize);
+  printf("%d (bytes)\n", ehdr->e_ehsize);
 
   printf("  Size of program headers:\t\t");
-  printf("%hx (bytes)\n", ehdr->e_phentsize);
+  printf("%d (bytes)\n", ehdr->e_phentsize);
 
   printf("  Number of program headers:\t\t");
   printf("%d\n", ehdr->e_phnum);
 
   printf("  Size of section headers:\t\t");
-  printf("%hx (bytes)\n", ehdr->e_shentsize);
+  printf("%d (bytes)\n", ehdr->e_shentsize);
 
   printf("  Number of section headers:\t\t");
   printf("%d\n", ehdr->e_shnum);
 
   printf("  Section header string table index:\t");
   printf("%d\n", ehdr->e_shstrndx);
+}
+
+void print_flags(Elf32_Word flags)
+{
+  printf("  Flags:\t\t\t\t");
+  printf("0x");
+  for (int i = 6; i < 0; i--)
+  {
+    printf("%u", flags);
+  }
+  printf("\n");
 }
 
 void affichage_entete(Elf32_Ehdr *ehdr)

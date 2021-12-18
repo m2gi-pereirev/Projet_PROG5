@@ -4,19 +4,22 @@
 
 FILE *filename;
 
-int bitread(size_t nb_bit)
+unsigned int bitread(size_t nb_bit)
 {
   int current_bit;
-  uint32_t byte = 0;
+  unsigned int byte = 0;
 
   current_bit = fgetc(filename);
+  // fprintf(stderr, "current: %hx\n", current_bit);
   byte = byte | current_bit;
 
-  for (size_t i = 0; i < nb_bit-1; i++)
+  for (size_t i = 0; i < nb_bit - 1; i++)
   {
     current_bit = fgetc(filename);
-    byte = (byte<<1) | current_bit;
+    // fprintf(stderr, "current: %u", current_bit);
+    byte = (byte << 1) | current_bit;
   }
+  // fprintf(stderr, "\n%hx\n", byte);
   return byte;
 }
 
