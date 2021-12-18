@@ -7,6 +7,7 @@
 #include <string.h>
 #include <elf.h>
 #include "bfile.h"
+#include "affichage.h"
 
 /**
  * @brief Read the current file and fill the header's structure
