@@ -1,5 +1,5 @@
-#ifndef __READ_HEADER_ELF_H__
-#define __READ_HEADER_ELF_H__
+#ifndef __BFILE_H__
+#define __BFILE_H__
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -1,5 +1,4 @@
-#include "read_header_elf.h"
-
+#include "read_ELF.h"
 
 void header_read(Elf32_Ehdr *ehdr)
 {
@@ -20,20 +19,45 @@ void header_read(Elf32_Ehdr *ehdr)
   ehdr->e_shstrndx = octetread(sizeof(ehdr->e_shstrndx));
 }
 
+void section_read(Elf32_Shdr *shdr)
+{
+  shdr->sh_name = octetread(sizeof(shdr->sh_name));
+}
+
 int main(int argc, char const *argv[])
 {
   Elf32_Ehdr *ehdr = malloc(sizeof(Elf32_Ehdr));
+  Elf32_Shdr *shdr = malloc(sizeof(Elf32_Shdr));
 
-  if (argc > 1){
+  if (argc > 1)
+  {
     bitopen(argv[1]);
-  } else{
+  }
+  else
+  {
     fprintf(stderr, "Error : only one possible argument\n");
     return -1;
   }
 
   header_read(ehdr); // Reading the header
-
   affichage_entete(ehdr);
+
+  if (ehdr->e_shnum > 0)
+  {
+    printf("There are %d section header, starting at offset 0x%x", ehdr->e_shnum, ehdr->e_shoff);
+    section_print_display_header();
+    for (int i = 0; i < ehdr->e_shnum; i++)
+    {
+      section_read(shdr);
+      affichage_section(shdr, i);
+    }
+
+  }
+  else
+  {
+    printf("There is no section in this file !\n");
+    return -1;
+  }
 
   bitclose() ? 0 : fprintf(stderr, "Cannot close file !\n");
   return 0;

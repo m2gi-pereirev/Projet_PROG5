@@ -1,5 +1,5 @@
-#ifndef __DISPLAY_H__
-#define __DISPLAY_H__
+#ifndef __DISPLAY_HEADER_H__
+#define __DISPLAY_HEADER_H__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,84 +13,77 @@
  *
  * @param ident
  */
-void print_magic(unsigned char *ident);
+void header_print_magic(unsigned char *ident);
 
 /**
  * @brief prints the first line if the file is an ELF
  *
  * @param ident
  */
-void print_isElfType(unsigned char *ident);
+void header_print_isElfType(unsigned char *ident);
 
 /**
  * @brief prints the class of the file 32 or 64 bits
  *
  * @param ident
  */
-void print_class(unsigned char *ident);
+void header_print_class(unsigned char *ident);
 
 /**
  * @brief prints data type little endian or big endian
  *
  * @param ident
  */
-void print_data(unsigned char *ident);
+void header_print_data(unsigned char *ident);
 
 /**
  * @brief prints the ELF version
  *
  * @param ident
  */
-void print_version_id(unsigned char *ident);
+void header_print_version_id(unsigned char *ident);
 
 /**
  * @brief prints the OS ABI
  *
  * @param ident
  */
-void print_os(unsigned char *ident);
+void header_print_os(unsigned char *ident);
 
 /**
  * @brief prints the ABI version
  *
  * @param ident
  */
-void print_abi_version(unsigned char *ident);
+void header_print_abi_version(unsigned char *ident);
 
 /**
  * @brief prints the type of the file
  *
  * @param type
  */
-void print_type(Elf32_Half type);
+void header_print_type(Elf32_Half type);
 
 /**
  * @brief prints for which machine the file is made
  *
  * @param machine
  */
-void print_machine(Elf32_Half machine);
+void header_print_machine(Elf32_Half machine);
 
 /**
  * @brief prints for which machine the file is made
  *
  * @param version
  */
-void print_version(Elf32_Word version);
+void header_print_version(Elf32_Word version);
 
 /**
  * @brief prints the addresses and values contained at the end of the header.
  *
  * @param ehdr
  */
-void print_adresse_offset(Elf32_Ehdr *ehdr);
-
-/**
- * @brief prints the correspondant value of flags
- *
- * @param flags
- */
-void print_flags(Elf32_Word flags);
+void header_print_adresse_offset(Elf32_Ehdr *ehdr);
 
 /**
  * @brief Print the header of the file
