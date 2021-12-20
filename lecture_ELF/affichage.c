@@ -288,7 +288,7 @@ void print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("  Start of section headers:\t\t");
   printf("%d (bytes into file)\n", ehdr->e_shoff);
 
-  print_flags(ehdr->e_flags);
+  // print_flags(ehdr->e_flags);
 
   printf("  Size of this header:\t\t\t");
   printf("%d (bytes)\n", ehdr->e_ehsize);
@@ -309,16 +309,20 @@ void print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("%d\n", ehdr->e_shstrndx);
 }
 
-void print_flags(Elf32_Word flags)
-{
-  printf("  Flags:\t\t\t\t");
-  printf("0x");
-  for (int i = 6; i < 0; i--)
-  {
-    printf("%u", flags);
-  }
-  printf("\n");
-}
+// void print_flags(Elf32_Word flags)
+// {
+//   printf("  Flags:\t\t\t\t");
+//   printf("0x%07" PRIx32 ", ", flags);
+//   switch (flags)
+//   {
+//   case /* constant-expression */:
+//     printf("text\n");
+//     break;
+
+//   default:
+//     break;
+//   }
+// }
 
 void affichage_entete(Elf32_Ehdr *ehdr)
 {
