@@ -1,22 +1,27 @@
 #include "bfile.h"
 
-#define DEBUG
-
 FILE *filename;
+int bit_number = 0;
 
-int bitread(size_t nb_bit)
+uint32_t octetread(size_t nb_octet)
 {
-  int current_bit;
+  assert(filename != NULL); // check is file is oppened
   uint32_t byte = 0;
-
-  current_bit = fgetc(filename);
-  byte = byte | current_bit;
-
-  for (size_t i = 0; i < nb_bit-1; i++)
+  unsigned tmp;
+  int count = 0;
+  do
   {
-    current_bit = fgetc(filename);
-    byte = (byte<<1) | current_bit;
-  }
+    tmp = fgetc(filename);
+    if(tmp == EOF) // if end of file return -1
+      return -1;
+    else
+    {
+      byte = (byte << 8) | tmp; // left shift of the old byte read to make room for the new byte
+    }
+    ++count; // counting of a number of bytes remaining to be read
+  } while(count < nb_octet);
+  fprintf(stderr, "%s", bin(byte)); // displays in stderr of the binary value read
+  fprintf(stderr, " = 0x%04" PRIx32 "\n", byte); // display in stderr of the hexadecimal value read
   return byte;
 }
 
@@ -38,4 +43,16 @@ bool bitclose(void)
 bool bitopened(void)
 {
   return filename != NULL;
+}
+
+char *bin(unsigned int i)
+{
+  static char buffer[1 + sizeof(unsigned int) * 8] = {0};
+  char *p = buffer - 1 + sizeof(unsigned int) * 8;
+  do
+  {
+    *--p = '0' + (i & 1);
+    i >>= 1;
+  } while (i);
+  return p;
 }

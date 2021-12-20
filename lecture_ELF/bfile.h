@@ -1,5 +1,5 @@
-// #ifndef __READ_HEADER_ELF_H__
-// #define __READ_HEADER_ELF_H__
+#ifndef __READ_HEADER_ELF_H__
+#define __READ_HEADER_ELF_H__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,13 +7,15 @@
 #include <stdbool.h>
 #include <elf.h>
 
+#include <inttypes.h>
+
 /**
  * @brief Read the current bit of the file.
  * You need to open the file before reading use bitopen
  * @param nb_bit number of bits to be read
- * @return ** int the bit of the file
+ * @return uint32_t the bits of the file demanded
  */
-int bitread(size_t nb_bit);
+uint32_t octetread(size_t nb_octet);
 
 /**
  * @brief Open a file to read it bit per bit
@@ -40,4 +42,12 @@ bool bitclose(void);
  */
 bool bitopened(void);
 
-// #endif
+/**
+ * @brief returns the binary string corresponding to the parameter
+ *
+ * @param i value to be transformed
+ * @return char* the biannual string corresponding to the value i
+ */
+char *bin(unsigned int i);
+
+#endif
