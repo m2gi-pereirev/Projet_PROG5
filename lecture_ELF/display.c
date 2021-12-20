@@ -1,4 +1,4 @@
-#include "affichage.h"
+#include "display.h"
 
 void print_magic(unsigned char *ident)
 {
@@ -318,7 +318,6 @@ void print_adresse_offset(Elf32_Ehdr *ehdr)
 //   case /* constant-expression */:
 //     printf("text\n");
 //     break;
-
 //   default:
 //     break;
 //   }
