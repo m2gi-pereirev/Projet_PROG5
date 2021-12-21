@@ -1,10 +1,10 @@
 CC=gcc
 CFLAGS= -Wall -g
 
-all : read_header bprint
+all: read-elf
 
-read_header: $(patsubst %.c, %.o, $(wildcard *.c) )
+read-elf: $(patsubst %.c, %.o, $(wildcard *.c) )
 	$(CC) -o $@ $^
 
 clean:
-	rm -rf *.o
+	rm -rf *.o read-elf
