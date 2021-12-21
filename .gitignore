@@ -11,3 +11,5 @@ lecture_ELF/bfile.o
 lecture_ELF/display_header.o
 lecture_ELF/display_section.o
 lecture_ELF/read_ELF.o
+lecture_ELF/display.o
+lecture_ELF/read_header_elf.o
