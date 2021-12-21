@@ -1,6 +1,13 @@
-Examples_loaders/*.o
 .deps/*Po
-*.o
-ARM_runner_example
-Examples_loader/example*
 .vscode/settings.json
+
+
+elf_linker-1.0/Examples_loaders/*.o
+elf_linker-1.0/Examples_loader/example*
+elf_linker-1.0/*.o
+ARM_runner_example
+
+lecture_ELF/bfile.o
+lecture_ELF/display_header.o
+lecture_ELF/display_section.o
+lecture_ELF/read_ELF.o
