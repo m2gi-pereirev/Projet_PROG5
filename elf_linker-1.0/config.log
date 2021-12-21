@@ -51,31 +51,31 @@ PATH: /home/benny/bin
 ## Core tests. ##
 ## ----------- ##
 
-configure:2405: checking for a BSD-compatible install
-configure:2473: result: /usr/bin/install -c
-configure:2484: checking whether build environment is sane
-configure:2539: result: yes
-configure:2690: checking for a thread-safe mkdir -p
-configure:2729: result: /usr/bin/mkdir -p
-configure:2736: checking for gawk
-configure:2752: found /usr/bin/gawk
-configure:2763: result: gawk
-configure:2774: checking whether make sets $(MAKE)
-configure:2796: result: yes
-configure:2825: checking whether make supports nested variables
-configure:2842: result: yes
-configure:3020: checking for gcc
-configure:3036: found /usr/bin/gcc
-configure:3047: result: gcc
-configure:3276: checking for C compiler version
-configure:3285: gcc --version >&5
+configure:2408: checking for a BSD-compatible install
+configure:2476: result: /usr/bin/install -c
+configure:2487: checking whether build environment is sane
+configure:2542: result: yes
+configure:2688: checking for a thread-safe mkdir -p
+configure:2727: result: /usr/bin/mkdir -p
+configure:2734: checking for gawk
+configure:2750: found /usr/bin/gawk
+configure:2761: result: gawk
+configure:2772: checking whether make sets $(MAKE)
+configure:2794: result: yes
+configure:2823: checking whether make supports nested variables
+configure:2840: result: yes
+configure:3032: checking for gcc
+configure:3048: found /usr/bin/gcc
+configure:3059: result: gcc
+configure:3288: checking for C compiler version
+configure:3297: gcc --version >&5
 gcc (Ubuntu 11.2.0-7ubuntu2) 11.2.0
 Copyright (C) 2021 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-configure:3296: $? = 0
-configure:3285: gcc -v >&5
+configure:3308: $? = 0
+configure:3297: gcc -v >&5
 Using built-in specs.
 COLLECT_GCC=gcc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper
@@ -87,79 +87,79 @@ Thread model: posix
 Supported LTO compression algorithms: zlib zstd
 gcc version 11.2.0 (Ubuntu 11.2.0-7ubuntu2) 
 ... rest of stderr output deleted ...
-configure:3296: $? = 0
-configure:3285: gcc -V >&5
+configure:3308: $? = 0
+configure:3297: gcc -V >&5
 gcc: error: unrecognized command-line option '-V'
 gcc: fatal error: no input files
 compilation terminated.
-configure:3296: $? = 1
-configure:3285: gcc -qversion >&5
+configure:3308: $? = 1
+configure:3297: gcc -qversion >&5
 gcc: error: unrecognized command-line option '-qversion'; did you mean '--version'?
 gcc: fatal error: no input files
 compilation terminated.
-configure:3296: $? = 1
-configure:3316: checking whether the C compiler works
-configure:3338: gcc    conftest.c  >&5
-configure:3342: $? = 0
-configure:3390: result: yes
-configure:3393: checking for C compiler default output file name
-configure:3395: result: a.out
-configure:3401: checking for suffix of executables
-configure:3408: gcc -o conftest    conftest.c  >&5
-configure:3412: $? = 0
-configure:3434: result: 
-configure:3456: checking whether we are cross compiling
-configure:3464: gcc -o conftest    conftest.c  >&5
-configure:3468: $? = 0
-configure:3475: ./conftest
-configure:3479: $? = 0
-configure:3494: result: no
-configure:3499: checking for suffix of object files
-configure:3521: gcc -c   conftest.c >&5
-configure:3525: $? = 0
-configure:3546: result: o
-configure:3550: checking whether we are using the GNU C compiler
-configure:3569: gcc -c   conftest.c >&5
-configure:3569: $? = 0
-configure:3578: result: yes
-configure:3587: checking whether gcc accepts -g
-configure:3607: gcc -c -g  conftest.c >&5
-configure:3607: $? = 0
-configure:3648: result: yes
-configure:3665: checking for gcc option to accept ISO C89
-configure:3728: gcc  -c -g -O2  conftest.c >&5
-configure:3728: $? = 0
-configure:3741: result: none needed
-configure:3766: checking whether gcc understands -c and -o together
-configure:3788: gcc -c conftest.c -o conftest2.o
-configure:3791: $? = 0
-configure:3788: gcc -c conftest.c -o conftest2.o
-configure:3791: $? = 0
-configure:3803: result: yes
-configure:3823: checking whether make supports the include directive
-configure:3838: make -f confmf.GNU && cat confinc.out
+configure:3308: $? = 1
+configure:3328: checking whether the C compiler works
+configure:3350: gcc    conftest.c  >&5
+configure:3354: $? = 0
+configure:3402: result: yes
+configure:3405: checking for C compiler default output file name
+configure:3407: result: a.out
+configure:3413: checking for suffix of executables
+configure:3420: gcc -o conftest    conftest.c  >&5
+configure:3424: $? = 0
+configure:3446: result: 
+configure:3468: checking whether we are cross compiling
+configure:3476: gcc -o conftest    conftest.c  >&5
+configure:3480: $? = 0
+configure:3487: ./conftest
+configure:3491: $? = 0
+configure:3506: result: no
+configure:3511: checking for suffix of object files
+configure:3533: gcc -c   conftest.c >&5
+configure:3537: $? = 0
+configure:3558: result: o
+configure:3562: checking whether we are using the GNU C compiler
+configure:3581: gcc -c   conftest.c >&5
+configure:3581: $? = 0
+configure:3590: result: yes
+configure:3599: checking whether gcc accepts -g
+configure:3619: gcc -c -g  conftest.c >&5
+configure:3619: $? = 0
+configure:3660: result: yes
+configure:3677: checking for gcc option to accept ISO C89
+configure:3740: gcc  -c -g -O2  conftest.c >&5
+configure:3740: $? = 0
+configure:3753: result: none needed
+configure:3778: checking whether gcc understands -c and -o together
+configure:3800: gcc -c conftest.c -o conftest2.o
+configure:3803: $? = 0
+configure:3800: gcc -c conftest.c -o conftest2.o
+configure:3803: $? = 0
+configure:3815: result: yes
+configure:3835: checking whether make supports the include directive
+configure:3850: make -f confmf.GNU && cat confinc.out
 this is the am__doit target
-configure:3841: $? = 0
-configure:3860: result: yes (GNU style)
-configure:3885: checking dependency style of gcc
-configure:3996: result: gcc3
-configure:4016: checking for flex
-configure:4032: found /usr/bin/flex
-configure:4043: result: flex
-configure:4081: flex conftest.l
-configure:4085: $? = 0
-configure:4087: checking lex output file root
-configure:4101: result: lex.yy
-configure:4106: checking lex library
-configure:4120: gcc -o conftest -g -O2   conftest.c   >&5
-/usr/bin/ld: /tmp/ccLFvjiG.o: in function `input':
+configure:3853: $? = 0
+configure:3872: result: yes (GNU style)
+configure:3897: checking dependency style of gcc
+configure:4008: result: gcc3
+configure:4028: checking for flex
+configure:4044: found /usr/bin/flex
+configure:4055: result: flex
+configure:4093: flex conftest.l
+configure:4097: $? = 0
+configure:4099: checking lex output file root
+configure:4113: result: lex.yy
+configure:4118: checking lex library
+configure:4132: gcc -o conftest -g -O2   conftest.c   >&5
+/usr/bin/ld: /tmp/ccYNLjCI.o: in function `input':
 /home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/lex.yy.c:1180: undefined reference to `yywrap'
-/usr/bin/ld: /tmp/ccLFvjiG.o: in function `yylex':
+/usr/bin/ld: /tmp/ccYNLjCI.o: in function `yylex':
 /home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/lex.yy.c:871: undefined reference to `yywrap'
-/usr/bin/ld: /tmp/ccLFvjiG.o: in function `main':
+/usr/bin/ld: /tmp/ccYNLjCI.o: in function `main':
 /home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/conftest.l:17: undefined reference to `yywrap'
 collect2: error: ld returned 1 exit status
-configure:4120: $? = 1
+configure:4132: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -1951,22 +1951,22 @@ configure: failed program was:
 | {
 |   return ! yylex () + ! yywrap ();
 | }
-configure:4120: gcc -o conftest -g -O2   conftest.c -lfl  >&5
-configure:4120: $? = 0
-configure:4130: result: -lfl
-configure:4136: checking whether yytext is a pointer
-configure:4153: gcc -o conftest -g -O2   conftest.c -lfl  >&5
-configure:4153: $? = 0
-configure:4161: result: yes
-configure:4183: checking how to run the C preprocessor
-configure:4214: gcc -E  conftest.c
-configure:4214: $? = 0
-configure:4228: gcc -E  conftest.c
+configure:4132: gcc -o conftest -g -O2   conftest.c -lfl  >&5
+configure:4132: $? = 0
+configure:4142: result: -lfl
+configure:4148: checking whether yytext is a pointer
+configure:4165: gcc -o conftest -g -O2   conftest.c -lfl  >&5
+configure:4165: $? = 0
+configure:4173: result: yes
+configure:4195: checking how to run the C preprocessor
+configure:4226: gcc -E  conftest.c
+configure:4226: $? = 0
+configure:4240: gcc -E  conftest.c
 conftest.c:12:10: fatal error: ac_nonexistent.h: No such file or directory
    12 | #include <ac_nonexistent.h>
       |          ^~~~~~~~~~~~~~~~~~
 compilation terminated.
-configure:4228: $? = 1
+configure:4240: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -1980,15 +1980,15 @@ configure: failed program was:
 | #define YYTEXT_POINTER 1
 | /* end confdefs.h.  */
 | #include <ac_nonexistent.h>
-configure:4253: result: gcc -E
-configure:4273: gcc -E  conftest.c
-configure:4273: $? = 0
-configure:4287: gcc -E  conftest.c
+configure:4265: result: gcc -E
+configure:4285: gcc -E  conftest.c
+configure:4285: $? = 0
+configure:4299: gcc -E  conftest.c
 conftest.c:12:10: fatal error: ac_nonexistent.h: No such file or directory
    12 | #include <ac_nonexistent.h>
       |          ^~~~~~~~~~~~~~~~~~
 compilation terminated.
-configure:4287: $? = 1
+configure:4299: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2002,133 +2002,133 @@ configure: failed program was:
 | #define YYTEXT_POINTER 1
 | /* end confdefs.h.  */
 | #include <ac_nonexistent.h>
-configure:4316: checking for grep that handles long lines and -e
-configure:4374: result: /usr/bin/grep
-configure:4379: checking for egrep
-configure:4441: result: /usr/bin/grep -E
-configure:4446: checking for ANSI C header files
-configure:4466: gcc -c -g -O2  conftest.c >&5
-configure:4466: $? = 0
-configure:4539: gcc -o conftest -g -O2   conftest.c  >&5
-configure:4539: $? = 0
-configure:4539: ./conftest
-configure:4539: $? = 0
-configure:4550: result: yes
-configure:4563: checking for sys/types.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for sys/stat.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for stdlib.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for string.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for memory.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for strings.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for inttypes.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for stdint.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4563: checking for unistd.h
-configure:4563: gcc -c -g -O2  conftest.c >&5
-configure:4563: $? = 0
-configure:4563: result: yes
-configure:4578: checking arpa/inet.h usability
-configure:4578: gcc -c -g -O2  conftest.c >&5
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking arpa/inet.h presence
-configure:4578: gcc -E  conftest.c
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking for arpa/inet.h
-configure:4578: result: yes
-configure:4578: checking fcntl.h usability
-configure:4578: gcc -c -g -O2  conftest.c >&5
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking fcntl.h presence
-configure:4578: gcc -E  conftest.c
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking for fcntl.h
-configure:4578: result: yes
-configure:4578: checking for inttypes.h
-configure:4578: result: yes
-configure:4578: checking netdb.h usability
-configure:4578: gcc -c -g -O2  conftest.c >&5
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking netdb.h presence
-configure:4578: gcc -E  conftest.c
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking for netdb.h
-configure:4578: result: yes
-configure:4578: checking netinet/in.h usability
-configure:4578: gcc -c -g -O2  conftest.c >&5
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking netinet/in.h presence
-configure:4578: gcc -E  conftest.c
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking for netinet/in.h
-configure:4578: result: yes
-configure:4578: checking for stdlib.h
-configure:4578: result: yes
-configure:4578: checking for string.h
-configure:4578: result: yes
-configure:4578: checking for strings.h
-configure:4578: result: yes
-configure:4578: checking sys/socket.h usability
-configure:4578: gcc -c -g -O2  conftest.c >&5
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking sys/socket.h presence
-configure:4578: gcc -E  conftest.c
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking for sys/socket.h
-configure:4578: result: yes
-configure:4578: checking sys/time.h usability
-configure:4578: gcc -c -g -O2  conftest.c >&5
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking sys/time.h presence
-configure:4578: gcc -E  conftest.c
-configure:4578: $? = 0
-configure:4578: result: yes
-configure:4578: checking for sys/time.h
-configure:4578: result: yes
-configure:4578: checking for unistd.h
-configure:4578: result: yes
-configure:4590: checking for mode_t
+configure:4328: checking for grep that handles long lines and -e
+configure:4386: result: /usr/bin/grep
+configure:4391: checking for egrep
+configure:4453: result: /usr/bin/grep -E
+configure:4458: checking for ANSI C header files
+configure:4478: gcc -c -g -O2  conftest.c >&5
+configure:4478: $? = 0
+configure:4551: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4551: $? = 0
+configure:4551: ./conftest
+configure:4551: $? = 0
+configure:4562: result: yes
+configure:4575: checking for sys/types.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for sys/stat.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for stdlib.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for string.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for memory.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for strings.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for inttypes.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for stdint.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4575: checking for unistd.h
+configure:4575: gcc -c -g -O2  conftest.c >&5
+configure:4575: $? = 0
+configure:4575: result: yes
+configure:4590: checking arpa/inet.h usability
 configure:4590: gcc -c -g -O2  conftest.c >&5
 configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking arpa/inet.h presence
+configure:4590: gcc -E  conftest.c
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking for arpa/inet.h
+configure:4590: result: yes
+configure:4590: checking fcntl.h usability
 configure:4590: gcc -c -g -O2  conftest.c >&5
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking fcntl.h presence
+configure:4590: gcc -E  conftest.c
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking for fcntl.h
+configure:4590: result: yes
+configure:4590: checking for inttypes.h
+configure:4590: result: yes
+configure:4590: checking netdb.h usability
+configure:4590: gcc -c -g -O2  conftest.c >&5
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking netdb.h presence
+configure:4590: gcc -E  conftest.c
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking for netdb.h
+configure:4590: result: yes
+configure:4590: checking netinet/in.h usability
+configure:4590: gcc -c -g -O2  conftest.c >&5
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking netinet/in.h presence
+configure:4590: gcc -E  conftest.c
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking for netinet/in.h
+configure:4590: result: yes
+configure:4590: checking for stdlib.h
+configure:4590: result: yes
+configure:4590: checking for string.h
+configure:4590: result: yes
+configure:4590: checking for strings.h
+configure:4590: result: yes
+configure:4590: checking sys/socket.h usability
+configure:4590: gcc -c -g -O2  conftest.c >&5
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking sys/socket.h presence
+configure:4590: gcc -E  conftest.c
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking for sys/socket.h
+configure:4590: result: yes
+configure:4590: checking sys/time.h usability
+configure:4590: gcc -c -g -O2  conftest.c >&5
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking sys/time.h presence
+configure:4590: gcc -E  conftest.c
+configure:4590: $? = 0
+configure:4590: result: yes
+configure:4590: checking for sys/time.h
+configure:4590: result: yes
+configure:4590: checking for unistd.h
+configure:4590: result: yes
+configure:4602: checking for mode_t
+configure:4602: gcc -c -g -O2  conftest.c >&5
+configure:4602: $? = 0
+configure:4602: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:69:21: error: expected expression before ')' token
    69 | if (sizeof ((mode_t)))
       |                     ^
-configure:4590: $? = 1
+configure:4602: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2203,16 +2203,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4590: result: yes
-configure:4601: checking for off_t
-configure:4601: gcc -c -g -O2  conftest.c >&5
-configure:4601: $? = 0
-configure:4601: gcc -c -g -O2  conftest.c >&5
+configure:4602: result: yes
+configure:4613: checking for off_t
+configure:4613: gcc -c -g -O2  conftest.c >&5
+configure:4613: $? = 0
+configure:4613: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:69:20: error: expected expression before ')' token
    69 | if (sizeof ((off_t)))
       |                    ^
-configure:4601: $? = 1
+configure:4613: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2287,16 +2287,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4601: result: yes
-configure:4612: checking for pid_t
-configure:4612: gcc -c -g -O2  conftest.c >&5
-configure:4612: $? = 0
-configure:4612: gcc -c -g -O2  conftest.c >&5
+configure:4613: result: yes
+configure:4624: checking for pid_t
+configure:4624: gcc -c -g -O2  conftest.c >&5
+configure:4624: $? = 0
+configure:4624: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:69:20: error: expected expression before ')' token
    69 | if (sizeof ((pid_t)))
       |                    ^
-configure:4612: $? = 1
+configure:4624: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2371,16 +2371,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4612: result: yes
-configure:4623: checking for size_t
-configure:4623: gcc -c -g -O2  conftest.c >&5
-configure:4623: $? = 0
-configure:4623: gcc -c -g -O2  conftest.c >&5
+configure:4624: result: yes
+configure:4635: checking for size_t
+configure:4635: gcc -c -g -O2  conftest.c >&5
+configure:4635: $? = 0
+configure:4635: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:69:21: error: expected expression before ')' token
    69 | if (sizeof ((size_t)))
       |                     ^
-configure:4623: $? = 1
+configure:4635: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2455,16 +2455,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4623: result: yes
-configure:4634: checking for ssize_t
-configure:4634: gcc -c -g -O2  conftest.c >&5
-configure:4634: $? = 0
-configure:4634: gcc -c -g -O2  conftest.c >&5
+configure:4635: result: yes
+configure:4646: checking for ssize_t
+configure:4646: gcc -c -g -O2  conftest.c >&5
+configure:4646: $? = 0
+configure:4646: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:69:22: error: expected expression before ')' token
    69 | if (sizeof ((ssize_t)))
       |                      ^
-configure:4634: $? = 1
+configure:4646: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2539,16 +2539,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4634: result: yes
-configure:4645: checking for int8_t
-configure:4645: gcc -c -g -O2  conftest.c >&5
-configure:4645: $? = 0
-configure:4645: gcc -c -g -O2  conftest.c >&5
+configure:4646: result: yes
+configure:4657: checking for int8_t
+configure:4657: gcc -c -g -O2  conftest.c >&5
+configure:4657: $? = 0
+configure:4657: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:70:12: error: size of array 'test_array' is negative
    70 | static int test_array [1 - 2 * !((int8_t) (((((int8_t) 1 << N) << N) - 1) * 2 + 1)
       |            ^~~~~~~~~~
-configure:4645: $? = 1
+configure:4657: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2627,16 +2627,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4645: result: yes
-configure:4656: checking for int16_t
-configure:4656: gcc -c -g -O2  conftest.c >&5
-configure:4656: $? = 0
-configure:4656: gcc -c -g -O2  conftest.c >&5
+configure:4657: result: yes
+configure:4668: checking for int16_t
+configure:4668: gcc -c -g -O2  conftest.c >&5
+configure:4668: $? = 0
+configure:4668: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:70:12: error: size of array 'test_array' is negative
    70 | static int test_array [1 - 2 * !((int16_t) (((((int16_t) 1 << N) << N) - 1) * 2 + 1)
       |            ^~~~~~~~~~
-configure:4656: $? = 1
+configure:4668: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2715,11 +2715,11 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4656: result: yes
-configure:4667: checking for int32_t
-configure:4667: gcc -c -g -O2  conftest.c >&5
-configure:4667: $? = 0
-configure:4667: gcc -c -g -O2  conftest.c >&5
+configure:4668: result: yes
+configure:4679: checking for int32_t
+configure:4679: gcc -c -g -O2  conftest.c >&5
+configure:4679: $? = 0
+configure:4679: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:71:67: warning: integer overflow in expression of type 'int' results in '-2147483648' [-Woverflow]
    71 |                  < (int32_t) (((((int32_t) 1 << N) << N) - 1) * 2 + 2))];
@@ -2727,7 +2727,7 @@ conftest.c:71:67: warning: integer overflow in expression of type 'int' results 
 conftest.c:70:12: error: storage size of 'test_array' isn't constant
    70 | static int test_array [1 - 2 * !((int32_t) (((((int32_t) 1 << N) << N) - 1) * 2 + 1)
       |            ^~~~~~~~~~
-configure:4667: $? = 1
+configure:4679: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2806,11 +2806,11 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4667: result: yes
-configure:4678: checking for int64_t
-configure:4678: gcc -c -g -O2  conftest.c >&5
-configure:4678: $? = 0
-configure:4678: gcc -c -g -O2  conftest.c >&5
+configure:4679: result: yes
+configure:4690: checking for int64_t
+configure:4690: gcc -c -g -O2  conftest.c >&5
+configure:4690: $? = 0
+configure:4690: gcc -c -g -O2  conftest.c >&5
 conftest.c: In function 'main':
 conftest.c:71:67: warning: integer overflow in expression of type 'long int' results in '-9223372036854775808' [-Woverflow]
    71 |                  < (int64_t) (((((int64_t) 1 << N) << N) - 1) * 2 + 2))];
@@ -2818,7 +2818,7 @@ conftest.c:71:67: warning: integer overflow in expression of type 'long int' res
 conftest.c:70:12: error: storage size of 'test_array' isn't constant
    70 | static int test_array [1 - 2 * !((int64_t) (((((int64_t) 1 << N) << N) - 1) * 2 + 1)
       |            ^~~~~~~~~~
-configure:4678: $? = 1
+configure:4690: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2897,34 +2897,34 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:4678: result: yes
-configure:4689: checking for uint8_t
-configure:4689: gcc -c -g -O2  conftest.c >&5
-configure:4689: $? = 0
-configure:4689: result: yes
-configure:4703: checking for uint16_t
-configure:4703: gcc -c -g -O2  conftest.c >&5
-configure:4703: $? = 0
-configure:4703: result: yes
-configure:4715: checking for uint32_t
+configure:4690: result: yes
+configure:4701: checking for uint8_t
+configure:4701: gcc -c -g -O2  conftest.c >&5
+configure:4701: $? = 0
+configure:4701: result: yes
+configure:4715: checking for uint16_t
 configure:4715: gcc -c -g -O2  conftest.c >&5
 configure:4715: $? = 0
 configure:4715: result: yes
-configure:4729: checking for uint64_t
-configure:4729: gcc -c -g -O2  conftest.c >&5
-configure:4729: $? = 0
-configure:4729: result: yes
-configure:4743: checking for error_at_line
-configure:4759: gcc -o conftest -g -O2   conftest.c  >&5
-configure:4759: $? = 0
-configure:4767: result: yes
-configure:4782: checking vfork.h usability
-configure:4782: gcc -c -g -O2  conftest.c >&5
+configure:4727: checking for uint32_t
+configure:4727: gcc -c -g -O2  conftest.c >&5
+configure:4727: $? = 0
+configure:4727: result: yes
+configure:4741: checking for uint64_t
+configure:4741: gcc -c -g -O2  conftest.c >&5
+configure:4741: $? = 0
+configure:4741: result: yes
+configure:4755: checking for error_at_line
+configure:4771: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4771: $? = 0
+configure:4779: result: yes
+configure:4794: checking vfork.h usability
+configure:4794: gcc -c -g -O2  conftest.c >&5
 conftest.c:66:10: fatal error: vfork.h: No such file or directory
    66 | #include <vfork.h>
       |          ^~~~~~~~~
 compilation terminated.
-configure:4782: $? = 1
+configure:4794: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -2992,14 +2992,14 @@ configure: failed program was:
 | # include <unistd.h>
 | #endif
 | #include <vfork.h>
-configure:4782: result: no
-configure:4782: checking vfork.h presence
-configure:4782: gcc -E  conftest.c
+configure:4794: result: no
+configure:4794: checking vfork.h presence
+configure:4794: gcc -E  conftest.c
 conftest.c:33:10: fatal error: vfork.h: No such file or directory
    33 | #include <vfork.h>
       |          ^~~~~~~~~
 compilation terminated.
-configure:4782: $? = 1
+configure:4794: $? = 1
 configure: failed program was:
 | /* confdefs.h */
 | #define PACKAGE_NAME "ELF_Linker"
@@ -3034,124 +3034,124 @@ configure: failed program was:
 | #define HAVE_UNISTD_H 1
 | /* end confdefs.h.  */
 | #include <vfork.h>
-configure:4782: result: no
-configure:4782: checking for vfork.h
-configure:4782: result: no
-configure:4795: checking for fork
-configure:4795: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4794: result: no
+configure:4794: checking for vfork.h
+configure:4794: result: no
+configure:4807: checking for fork
+configure:4807: gcc -o conftest -g -O2   conftest.c  >&5
 conftest.c:56:6: warning: conflicting types for built-in function 'fork'; expected 'int(void)' [-Wbuiltin-declaration-mismatch]
    56 | char fork ();
       |      ^~~~
-configure:4795: $? = 0
-configure:4795: result: yes
-configure:4795: checking for vfork
-configure:4795: gcc -o conftest -g -O2   conftest.c  >&5
-configure:4795: $? = 0
-configure:4795: result: yes
-configure:4805: checking for working fork
-configure:4827: gcc -o conftest -g -O2   conftest.c  >&5
-configure:4827: $? = 0
-configure:4827: ./conftest
-configure:4827: $? = 0
-configure:4837: result: yes
-configure:4858: checking for working vfork
-configure:4968: result: yes
-configure:4995: checking for stdlib.h
-configure:4995: result: yes
-configure:5005: checking for GNU libc compatible malloc
-configure:5029: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5029: $? = 0
-configure:5029: ./conftest
-configure:5029: $? = 0
-configure:5039: result: yes
-configure:5066: checking for stdlib.h
-configure:5066: result: yes
-configure:5066: checking for unistd.h
-configure:5066: result: yes
-configure:5066: checking for sys/param.h
-configure:5066: gcc -c -g -O2  conftest.c >&5
-configure:5066: $? = 0
-configure:5066: result: yes
-configure:5086: checking for getpagesize
-configure:5086: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5086: $? = 0
-configure:5086: result: yes
-configure:5095: checking for working mmap
-configure:5244: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5244: $? = 0
-configure:5244: ./conftest
-configure:5244: $? = 0
-configure:5254: result: yes
-configure:5265: checking for stdlib.h
-configure:5265: result: yes
-configure:5275: checking for GNU libc compatible realloc
-configure:5299: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5299: $? = 0
-configure:5299: ./conftest
-configure:5299: $? = 0
-configure:5309: result: yes
-configure:5333: checking for alarm
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for bzero
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4807: $? = 0
+configure:4807: result: yes
+configure:4807: checking for vfork
+configure:4807: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4807: $? = 0
+configure:4807: result: yes
+configure:4817: checking for working fork
+configure:4839: gcc -o conftest -g -O2   conftest.c  >&5
+configure:4839: $? = 0
+configure:4839: ./conftest
+configure:4839: $? = 0
+configure:4849: result: yes
+configure:4870: checking for working vfork
+configure:4980: result: yes
+configure:5007: checking for stdlib.h
+configure:5007: result: yes
+configure:5017: checking for GNU libc compatible malloc
+configure:5041: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5041: $? = 0
+configure:5041: ./conftest
+configure:5041: $? = 0
+configure:5051: result: yes
+configure:5078: checking for stdlib.h
+configure:5078: result: yes
+configure:5078: checking for unistd.h
+configure:5078: result: yes
+configure:5078: checking for sys/param.h
+configure:5078: gcc -c -g -O2  conftest.c >&5
+configure:5078: $? = 0
+configure:5078: result: yes
+configure:5098: checking for getpagesize
+configure:5098: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5098: $? = 0
+configure:5098: result: yes
+configure:5107: checking for working mmap
+configure:5256: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5256: $? = 0
+configure:5256: ./conftest
+configure:5256: $? = 0
+configure:5266: result: yes
+configure:5277: checking for stdlib.h
+configure:5277: result: yes
+configure:5287: checking for GNU libc compatible realloc
+configure:5311: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5311: $? = 0
+configure:5311: ./conftest
+configure:5311: $? = 0
+configure:5321: result: yes
+configure:5345: checking for alarm
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for bzero
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
 conftest.c:70:6: warning: conflicting types for built-in function 'bzero'; expected 'void(void *, long unsigned int)' [-Wbuiltin-declaration-mismatch]
    70 | char bzero ();
       |      ^~~~~
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for dup2
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for gethostbyaddr
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for gethostbyname
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for munmap
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for select
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for socket
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for strerror
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5333: checking for memset
-configure:5333: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for dup2
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for gethostbyaddr
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for gethostbyname
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for munmap
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for select
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for socket
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for strerror
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5345: checking for memset
+configure:5345: gcc -o conftest -g -O2   conftest.c  >&5
 conftest.c:78:6: warning: conflicting types for built-in function 'memset'; expected 'void *(void *, int,  long unsigned int)' [-Wbuiltin-declaration-mismatch]
    78 | char memset ();
       |      ^~~~~~
 conftest.c:66:1: note: 'memset' is declared in header '<string.h>'
    65 | # include <limits.h>
    66 | #else
-configure:5333: $? = 0
-configure:5333: result: yes
-configure:5360: checking for arm-elf-gcc
-configure:5390: result: no
-configure:5360: checking for arm-linux-gnueabi-gcc
-configure:5390: result: no
-configure:5360: checking for arm-eabi-gcc
-configure:5390: result: no
-configure:5360: checking for arm-none-eabi-gcc
-configure:5376: found /usr/bin/arm-none-eabi-gcc
-configure:5387: result: arm-none-eabi-gcc
-configure:5434: enabling the Examples directory with arm-none-eabi cross-compiler target
-configure:5612: checking that generated files are newer than configure
-configure:5618: result: done
-configure:5645: creating ./config.status
+configure:5345: $? = 0
+configure:5345: result: yes
+configure:5372: checking for arm-elf-gcc
+configure:5402: result: no
+configure:5372: checking for arm-linux-gnueabi-gcc
+configure:5402: result: no
+configure:5372: checking for arm-eabi-gcc
+configure:5402: result: no
+configure:5372: checking for arm-none-eabi-gcc
+configure:5388: found /usr/bin/arm-none-eabi-gcc
+configure:5399: result: arm-none-eabi-gcc
+configure:5446: enabling the Examples directory with arm-none-eabi cross-compiler target
+configure:5624: checking that generated files are newer than configure
+configure:5630: result: done
+configure:5657: creating ./config.status
 
 ## ---------------------- ##
 ## Running config.status. ##
@@ -3168,12 +3168,12 @@ generated by GNU Autoconf 2.69.  Invocation command line was
 
 on pop-os
 
-config.status:789: creating Makefile
-config.status:961: executing depfiles commands
-config.status:1038: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
-config.status:1043: $? = 0
-configure:6858: === configuring in Examples_loader (/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/Examples_loader)
-configure:6921: running /bin/bash ./configure --disable-option-checking '--prefix=/usr/local'  '--host=arm-none-eabi' '--enable-arm-compiler' --cache-file=/dev/null --srcdir=.
+config.status:792: creating Makefile
+config.status:964: executing depfiles commands
+config.status:1041: cd .       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+config.status:1046: $? = 0
+configure:6872: === configuring in Examples_loader (/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/Examples_loader)
+configure:6935: running /bin/bash ./configure --disable-option-checking '--prefix=/usr/local'  '--host=arm-none-eabi' '--enable-arm-compiler' --cache-file=/dev/null --srcdir=.
 
 ## ---------------- ##
 ## Cache variables. ##
@@ -3272,7 +3272,7 @@ am_cv_prog_cc_c_o=yes
 ## Output variables. ##
 ## ----------------- ##
 
-ACLOCAL='${SHELL} "/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing" aclocal-1.16'
+ACLOCAL='${SHELL} '\''/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing'\'' aclocal-1.16'
 AMDEPBACKSLASH='\'
 AMDEP_FALSE='#'
 AMDEP_TRUE=''
@@ -3281,15 +3281,17 @@ AM_BACKSLASH='\'
 AM_DEFAULT_V='$(AM_DEFAULT_VERBOSITY)'
 AM_DEFAULT_VERBOSITY='1'
 AM_V='$(V)'
-AUTOCONF='${SHELL} "/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing" autoconf'
-AUTOHEADER='${SHELL} "/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing" autoheader'
-AUTOMAKE='${SHELL} "/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing" automake-1.16'
+AUTOCONF='${SHELL} '\''/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing'\'' autoconf'
+AUTOHEADER='${SHELL} '\''/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing'\'' autoheader'
+AUTOMAKE='${SHELL} '\''/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing'\'' automake-1.16'
 AWK='gawk'
 CC='gcc'
 CCDEPMODE='depmode=gcc3'
 CFLAGS='-g -O2'
 CPP='gcc -E'
 CPPFLAGS=''
+CSCOPE='cscope'
+CTAGS='ctags'
 CYGPATH_W='echo'
 DEFS='-DPACKAGE_NAME=\"ELF_Linker\" -DPACKAGE_TARNAME=\"elf_linker\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"ELF_Linker\ 1.0\" -DPACKAGE_BUGREPORT=\"Guillaume.Huard@imag.fr\" -DPACKAGE_URL=\"\" -DPACKAGE=\"elf_linker\" -DVERSION=\"1.0\" -DYYTEXT_POINTER=1 -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_ARPA_INET_H=1 -DHAVE_FCNTL_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_NETDB_H=1 -DHAVE_NETINET_IN_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_STRINGS_H=1 -DHAVE_SYS_SOCKET_H=1 -DHAVE_SYS_TIME_H=1 -DHAVE_UNISTD_H=1 -DHAVE_FORK=1 -DHAVE_VFORK=1 -DHAVE_WORKING_VFORK=1 -DHAVE_WORKING_FORK=1 -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=1 -DHAVE_STDLIB_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SYS_PARAM_H=1 -DHAVE_GETPAGESIZE=1 -DHAVE_MMAP=1 -DHAVE_STDLIB_H=1 -DHAVE_REALLOC=1 -DHAVE_ALARM=1 -DHAVE_BZERO=1 -DHAVE_DUP2=1 -DHAVE_GETHOSTBYADDR=1 -DHAVE_GETHOSTBYNAME=1 -DHAVE_MUNMAP=1 -DHAVE_SELECT=1 -DHAVE_SOCKET=1 -DHAVE_STRERROR=1 -DHAVE_MEMSET=1'
 DEPDIR='.deps'
@@ -3297,6 +3299,7 @@ ECHO_C=''
 ECHO_N='-n'
 ECHO_T=''
 EGREP='/usr/bin/grep -E'
+ETAGS='etags'
 EXEEXT=''
 GCC_CROSS='arm-none-eabi-gcc'
 GREP='/usr/bin/grep'
@@ -3313,7 +3316,7 @@ LEX_OUTPUT_ROOT='lex.yy'
 LIBOBJS=''
 LIBS=''
 LTLIBOBJS=''
-MAKEINFO='${SHELL} "/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing" makeinfo'
+MAKEINFO='${SHELL} '\''/home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/elf_linker-1.0/build-aux/missing'\'' makeinfo'
 MKDIR_P='/usr/bin/mkdir -p'
 OBJEXT='o'
 PACKAGE='elf_linker'

@@ -2,8 +2,6 @@
 .vscode/settings.json
 
 
-elf_linker-1.0/Examples_loaders/*.o
-elf_linker-1.0/Examples_loader/example*
 elf_linker-1.0/*.o
 ARM_runner_example
 
