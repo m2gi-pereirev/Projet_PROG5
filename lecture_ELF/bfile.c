@@ -25,6 +25,9 @@ uint32_t octetread(size_t nb_octet)
   return byte;
 }
 
+// printf(" = 0x%08" PRIx32, sh->sh_addr);
+
+
 bool bitopen(char const *file)
 {
   assert(file);
