@@ -12,10 +12,19 @@
 /**
  * @brief Read the current bit of the file.
  * You need to open the file before reading use bitopen
- * @param nb_bit number of bits to be read
+ * @param nb_octet number of bytes to be read
  * @return uint32_t the bits of the file demanded
  */
 uint32_t octetread(size_t nb_octet);
+
+/**
+ * @brief Read the current bit of the file.
+ * You need to open the file before reading use bitopen
+ * @param shdr_adress the adress where the value read is stored
+ *        nb_octet number of bytes to be read
+ * @return nothing
+ */
+void octetread_section(void *shdr_adress, int nb_octet);
 
 /**
  * @brief Open a file to read it bit per bit

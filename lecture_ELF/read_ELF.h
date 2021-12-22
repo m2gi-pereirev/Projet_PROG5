@@ -21,6 +21,6 @@ void header_read(Elf32_Ehdr *ehdr);
  *
  * @param shdr structure of section for 32-bit architecture
  */
-void section_read(Elf32_Shdr *shdr);
+void section_read(Elf32_Ehdr *ehdr , Elf32_Shdr *shdr);
 
 #endif

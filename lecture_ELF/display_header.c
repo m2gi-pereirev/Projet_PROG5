@@ -311,7 +311,7 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("%d\n", ehdr->e_shstrndx);
 }
 
-void affichage_entete(Elf32_Ehdr *ehdr)
+void print_entete(Elf32_Ehdr *ehdr)
 {
   header_print_magic(ehdr->e_ident);
   header_print_class(ehdr->e_ident);

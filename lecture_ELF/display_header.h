@@ -90,7 +90,7 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr);
  *
  * @param ehdr
  */
-void affichage_entete(Elf32_Ehdr *ehdr);
+void print_entete(Elf32_Ehdr *ehdr);
 
 /**
  * @brief return if ti's a ELF formated file

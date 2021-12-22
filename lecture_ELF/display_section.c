@@ -9,7 +9,8 @@ void section_print_number(int num)
 }
 
 void section_print_display_header()
-{
+{   
+    printf("\n");
     printf("\nSection Headers:\n");
     printf("  [Nr]\tName\t\tType\t\tAddr\toff\tSize\tES Flg\tLk Inf Al\n");
 }
@@ -172,9 +173,9 @@ void section_print_flags(Elf32_Word flags)
     case SHF_MASKPROC:
         printf("MSKPROC\t");
         break;
-    case SHF_GNU_RETAIN:
+    /*case SHF_GNU_RETAIN:
         printf("RETAIN\t");
-        break;
+        break;*/
     case SHF_ORDERED:
         printf("ORD\t");
         break;
@@ -222,18 +223,27 @@ void section_print_alignement(Elf32_Word align)
     printf("%hx", align);
 }
 
-void affichage_section(Elf32_Shdr *shdr, int shnum)
+void section_print_flag_key_info()
+{
+    printf("\nFlag key:\n"); 
+    printf("  W (write), A (allocation), X (execution), M (merge), S (strings), I (info),\n");
+    printf("  L (order of the links), O (additional processing by the OS required), G (group),\n");
+    printf("  T (TLS), C (compressed), x (unknown), o (OS specific), E (excluded),\n");
+    printf("  y (purecode), p (processor specific)\n");
+}
+
+void print_section(Elf32_Shdr *shdr, int shnum)
 {
     section_print_number(shnum);
-    section_print_name(shdr->sh_name);
-    section_print_type(shdr->sh_type);
-    section_print_address(shdr->sh_addr);
-    section_print_decalage(shdr->sh_offset);
-    section_print_size(shdr->sh_size);
-    section_print_entrysize(shdr->sh_entsize);
-    section_print_flags(shdr->sh_flags);
-    section_print_link(shdr->sh_link);
-    section_print_info(shdr->sh_info);
-    section_print_alignement(shdr->sh_addralign);
+    section_print_name(shdr[shnum].sh_name);
+    section_print_type(shdr[shnum].sh_type);
+    section_print_address(shdr[shnum].sh_addr);
+    section_print_decalage(shdr[shnum].sh_offset);
+    section_print_size(shdr[shnum].sh_size);
+    section_print_entrysize(shdr[shnum].sh_entsize);
+    section_print_flags(shdr[shnum].sh_flags);
+    section_print_link(shdr[shnum].sh_link);
+    section_print_info(shdr[shnum].sh_info);
+    section_print_alignement(shdr[shnum].sh_addralign);
     printf("\n");
 }

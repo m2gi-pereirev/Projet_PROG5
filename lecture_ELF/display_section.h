@@ -42,6 +42,7 @@ void section_print_entrysize(Elf32_Word entrysize);
 void section_print_link(Elf32_Word link);
 void section_print_info(Elf32_Word info);
 void section_print_alignement(Elf32_Word align);
+void section_print_flag_key_info();
 
 /**
  * @brief Print the section headers of the file
@@ -49,6 +50,6 @@ void section_print_alignement(Elf32_Word align);
  * @param shdr
  * @param shnum
  */
-void affichage_section(Elf32_Shdr *shdr, int shnum);
+void print_section(Elf32_Shdr *shdr, int shnum);
 
 #endif
