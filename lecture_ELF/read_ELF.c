@@ -4,7 +4,7 @@ void header_read(Elf32_Ehdr *ehdr)
 {
   for (int i = 0; i < 16; i++)
     ehdr->e_ident[i] = octetread(sizeof(unsigned char));
-  
+
   ehdr->e_type = octetread(sizeof(ehdr->e_type));
   ehdr->e_machine = octetread(sizeof(ehdr->e_machine));
   ehdr->e_version = octetread(sizeof(ehdr->e_version));
@@ -20,33 +20,42 @@ void header_read(Elf32_Ehdr *ehdr)
   ehdr->e_shstrndx = octetread(sizeof(ehdr->e_shstrndx));
 }
 
+// void section_read(Elf32_Ehdr *ehdr, Elf32_Shdr *shdr)
+// {
+//   for (int i = 0; i < ehdr->e_shnum; i++)
+//   {
+//     octetread_section(&shdr[i].sh_name, sizeof(shdr[i].sh_name));
+//     octetread_section(&shdr[i].sh_type, sizeof(shdr[i].sh_type));
+//     octetread_section(&shdr[i].sh_flags, sizeof(shdr[i].sh_flags));
+//     octetread_section(&shdr[i].sh_addr, sizeof(shdr[i].sh_addr));
+//     octetread_section(&shdr[i].sh_offset, sizeof(shdr[i].sh_offset));
+//     octetread_section(&shdr[i].sh_size, sizeof(shdr[i].sh_size));
+//     octetread_section(&shdr[i].sh_link, sizeof(shdr[i].sh_link));
+//     octetread_section(&shdr[i].sh_info, sizeof(shdr[i].sh_info));
+//     octetread_section(&shdr[i].sh_addralign, sizeof(shdr[i].sh_addralign));
+//     octetread_section(&shdr[i].sh_entsize, sizeof(shdr[i].sh_entsize));
+//   }
+// }
 
-void section_read(Elf32_Ehdr *ehdr, Elf32_Shdr *shdr){
-
-  for(int i=0; i<ehdr->e_shnum; i++){
-    octetread_section(&shdr[i].sh_name, sizeof(shdr[i].sh_name));
-    octetread_section(&shdr[i].sh_type, sizeof(shdr[i].sh_type));
-    octetread_section(&shdr[i].sh_flags, sizeof(shdr[i].sh_flags));
-    octetread_section(&shdr[i].sh_addr, sizeof(shdr[i].sh_addr));
-    octetread_section(&shdr[i].sh_offset, sizeof(shdr[i].sh_offset));
-    octetread_section(&shdr[i].sh_size, sizeof(shdr[i].sh_size));
-    octetread_section(&shdr[i].sh_link, sizeof(shdr[i].sh_link));
-    octetread_section(&shdr[i].sh_info, sizeof(shdr[i].sh_info));
-    octetread_section(&shdr[i].sh_addralign, sizeof(shdr[i].sh_addralign));
-    octetread_section(&shdr[i].sh_entsize, sizeof(shdr[i].sh_entsize));
-  }
+void section_read(Elf32_Shdr *shdr)
+{
+  shdr->sh_name = octetread(sizeof(shdr->sh_name));
+  shdr->sh_type = octetread(sizeof(shdr->sh_type));
+  shdr->sh_flags = octetread(sizeof(shdr->sh_flags));
+  shdr->sh_addr = octetread(sizeof(shdr->sh_addr));
+  shdr->sh_offset = octetread(sizeof(shdr->sh_offset));
+  shdr->sh_size = octetread(sizeof(shdr->sh_size));
+  shdr->sh_link = octetread(sizeof(shdr->sh_link));
+  shdr->sh_info = octetread(sizeof(shdr->sh_info));
+  shdr->sh_addralign = octetread(sizeof(shdr->sh_addralign));
+  shdr->sh_entsize = octetread(sizeof(shdr->sh_entsize));
 }
-
 
 int main(int argc, char const *argv[])
 {
-  const char *filename = argv[1];
-  FILE* file = fopen(filename,"r");
-  
-  Elf32_Ehdr *ehdr = malloc(sizeof(Elf32_Ehdr));
-  assert(ehdr != NULL);
+  Elf32_Ehdr ehdr;
 
-  Elf32_Shdr *shdr = malloc(sizeof(Elf32_Shdr) * ehdr->e_shnum);
+  Elf32_Shdr *shdr = malloc(sizeof(Elf32_Shdr));
   assert(shdr != NULL);
 
   if (argc > 1)
@@ -59,30 +68,30 @@ int main(int argc, char const *argv[])
     return -1;
   }
 
-  header_read(ehdr); // Reading the header
-  print_entete(ehdr);
+  // header_read(ehdr); // Reading the header
+  read(&ehdr);
+  print_entete(&ehdr);
 
-  if (ehdr->e_shnum > 0)
-  {
-    printf("\n");
-    printf("There are %d section header, starting at offset 0x%x", ehdr->e_shnum, ehdr->e_shoff);
-    
-    section_print_display_header();
-    fseek(file, ehdr->e_shoff, SEEK_SET); //We start the read at the start of the section header table
-    section_read(ehdr, shdr);
+  // if (ehdr->e_shnum > 0)
+  // {
+  //   printf("\n");
+  //   printf("There are %d section header, starting at offset 0x%x", ehdr->e_shnum, ehdr->e_shoff);
 
-    
-    for(int i = 0; i < ehdr->e_shnum; i++){
-      print_section(shdr,i);
-    }
-    section_print_flag_key_info();
-  }
+  //   section_print_display_header();
+  //   section_headers_start(ehdr->e_shoff, ehdr->e_shstrndx);
+  //   for (int i = 0; i < ehdr->e_shnum; i++)
+  //   {
+  //     section_read(shdr);
+  //     print_section(shdr, i);
+  //   }
+  //   section_print_flag_key_info();
+  // }
 
-  else
-  {
-    printf("There is no section in this file !\n");
-    return -1;
-  }
+  // else
+  // {
+  //   printf("There is no section in this file !\n");
+  //   return -1;
+  // }
 
   bitclose() ? 0 : fprintf(stderr, "Cannot close file !\n");
   return 0;

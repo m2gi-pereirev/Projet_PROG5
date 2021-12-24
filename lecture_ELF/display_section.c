@@ -9,7 +9,7 @@ void section_print_number(int num)
 }
 
 void section_print_display_header()
-{   
+{
     printf("\n");
     printf("\nSection Headers:\n");
     printf("  [Nr]\tName\t\tType\t\tAddr\toff\tSize\tES Flg\tLk Inf Al\n");
@@ -17,7 +17,7 @@ void section_print_display_header()
 
 void section_print_name(Elf32_Word name)
 {
-    printf("%d\t", name);
+    printf("%d\t\t", name);
     // printf("%c\n", name);
 }
 
@@ -124,8 +124,8 @@ void section_print_type(Elf32_Word type)
     case SHT_HIUSER:
         printf("HIUSER\t\t");
         break;
-
     default:
+        printf("NONE\t\t");
         break;
     }
 }
@@ -135,97 +135,92 @@ void section_print_flags(Elf32_Word flags)
     switch (flags)
     {
     case SHF_WRITE:
-        printf("WRITE");
+        printf("  W  ");
         break;
     case SHF_ALLOC:
-        printf("ALLOC\t");
+        printf("  A  ");
         break;
     case SHF_EXECINSTR:
-        printf("INSTR\t");
+        printf("  X  ");
         break;
     case SHF_MERGE:
-        printf("MERGE\t");
+        printf("  M  ");
         break;
     case SHF_STRINGS:
-        printf("STR\t");
+        printf("  S  ");
         break;
     case SHF_INFO_LINK:
-        printf("IFLK\t");
+        printf("  I  ");
         break;
     case SHF_LINK_ORDER:
-        printf("LKO\t");
+        printf("  L  ");
         break;
-    case SHF_OS_NONCONFORMING:
-        printf("N_OS\t");
+    case SHF_ORDERED:
+        printf("  O  ");
         break;
     case SHF_GROUP:
-        printf("GRP\t");
+        printf("  G  ");
         break;
     case SHF_TLS:
-        printf("TLS\t");
+        printf("  T  ");
         break;
     case SHF_COMPRESSED:
-        printf("COMP\t");
+        printf("  C  ");
         break;
     case SHF_MASKOS:
-        printf("MSKOS\t");
-        break;
-    case SHF_MASKPROC:
-        printf("MSKPROC\t");
-        break;
-    /*case SHF_GNU_RETAIN:
-        printf("RETAIN\t");
-        break;*/
-    case SHF_ORDERED:
-        printf("ORD\t");
+        printf("  o  ");
         break;
     case SHF_EXCLUDE:
-        printf("EXCLD\t");
+        printf("  E  ");
+        break;
+    case SHF_MASKPROC:
+        printf("  p  ");
         break;
 
     default:
+        printf("     ");
         break;
     }
 }
 
 void section_print_decalage(Elf32_Off decalage)
 {
-    printf("%06" PRIX32 "\t", decalage);
+    printf("%06" PRIx32 "\t", decalage);
 }
 
 void section_print_address(Elf32_Addr address)
 {
-    printf("%06" PRIX32 "\t", address);
+    printf("%06" PRIx32 "\t", address);
 }
 
 void section_print_size(Elf32_Word size)
 {
-    printf("%06" PRIX32 "\t", size);
+    printf("%06" PRIx32 "\t", size);
 }
 
 void section_print_entrysize(Elf32_Word entrysize)
 {
-    printf("%02" PRIX32 "\t", entrysize);
+    printf("%02" PRIx32 " ", entrysize);
 }
 
 void section_print_link(Elf32_Word link)
 {
-    printf("%hx", link);
+    printf("%02" PRIx32 "  ", link);
 }
 
 void section_print_info(Elf32_Word info)
 {
-    printf("%hx", info);
+    printf("%02" PRIx32 "  ", info);
 }
 
 void section_print_alignement(Elf32_Word align)
 {
-    printf("%hx", align);
+    printf("%02" PRIx32 " ", align);
 }
 
 void section_print_flag_key_info()
 {
-    printf("\nFlag key:\n"); 
+    printf("\nFlag key:\n");
     printf("  W (write), A (allocation), X (execution), M (merge), S (strings), I (info),\n");
     printf("  L (order of the links), O (additional processing by the OS required), G (group),\n");
     printf("  T (TLS), C (compressed), x (unknown), o (OS specific), E (excluded),\n");
@@ -235,15 +230,15 @@ void section_print_flag_key_info()
 void print_section(Elf32_Shdr *shdr, int shnum)
 {
     section_print_number(shnum);
-    section_print_name(shdr[shnum].sh_name);
-    section_print_type(shdr[shnum].sh_type);
-    section_print_address(shdr[shnum].sh_addr);
-    section_print_decalage(shdr[shnum].sh_offset);
-    section_print_size(shdr[shnum].sh_size);
-    section_print_entrysize(shdr[shnum].sh_entsize);
-    section_print_flags(shdr[shnum].sh_flags);
-    section_print_link(shdr[shnum].sh_link);
-    section_print_info(shdr[shnum].sh_info);
-    section_print_alignement(shdr[shnum].sh_addralign);
+    section_print_name(shdr->sh_name);
+    section_print_type(shdr->sh_type);
+    section_print_address(shdr->sh_addr);
+    section_print_decalage(shdr->sh_offset);
+    section_print_size(shdr->sh_size);
+    section_print_entrysize(shdr->sh_entsize);
+    section_print_flags(shdr->sh_flags);
+    section_print_link(shdr->sh_link);
+    section_print_info(shdr->sh_info);
+    section_print_alignement(shdr->sh_addralign);
     printf("\n");
 }

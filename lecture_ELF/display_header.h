@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <elf.h>
 #include <inttypes.h>
-
+#include <string.h>
 
 /**
  * @brief prints the magic number

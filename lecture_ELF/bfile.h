@@ -24,7 +24,7 @@ uint32_t octetread(size_t nb_octet);
  *        nb_octet number of bytes to be read
  * @return nothing
  */
-void octetread_section(void *shdr_adress, int nb_octet);
+void octetread_section(void *shdr_adress, size_t nb_octet);
 
 /**
  * @brief Open a file to read it bit per bit
@@ -52,11 +52,11 @@ bool bitclose(void);
 bool bitopened(void);
 
 /**
- * @brief returns the binary string corresponding to the parameter
+ * @brief save the current position and
  *
- * @param i value to be transformed
- * @return char* the biannual string corresponding to the value i
  */
-char *bin(unsigned int i);
+void section_headers_start(Elf32_Off offset, Elf32_Half shstrndx);
+
+void read(Elf32_Ehdr *ehdr);
 
 #endif

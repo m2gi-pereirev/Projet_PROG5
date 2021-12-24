@@ -25,7 +25,7 @@ void header_print_isElfType(unsigned char *ident)
 bool is_ELF_header(unsigned char *ident)
 {
   // Check if the magic number of the file correponds to ELF identifier file
-  return (ident[EI_MAG0] == ELFMAG0 && ident[EI_MAG1] == ELFMAG1 && ident[EI_MAG2] == ELFMAG2 && ident[EI_MAG3] == ELFMAG3);
+  return memcmp(ident, ELFMAG, SELFMAG) == 0;
 }
 
 void header_print_class(unsigned char *ident)
@@ -159,107 +159,95 @@ void header_print_type(Elf32_Half type)
   case ET_NONE:
     printf("An unknown type\n");
     break;
+
+  default:
+    printf("%01" PRIx32 "\n", type);
+    break;
   }
 }
 
 void header_print_machine(Elf32_Half machine)
 {
+  printf("%hx", machine);
+  printf("  Machine:\t\t\t\t");
   switch (machine)
   {
   case EM_M32:
-    printf("  Machine:\t\t\t\t");
     printf("AT&T WE 32100\n");
     break;
 
   case EM_SPARC:
-    printf("  Machine:\t\t\t\t");
     printf("Sun Microsystems SPARC\n");
     break;
 
   case EM_386:
-    printf("  Machine:\t\t\t\t");
     printf("Intel 80386\n");
     break;
 
   case EM_68K:
-    printf("  Machine:\t\t\t\t");
     printf("Motorola 68000\n");
     break;
 
   case EM_88K:
-    printf("  Machine:\t\t\t\t");
     printf("Motorola 88000\n");
     break;
 
   case EM_860:
-    printf("  Machine:\t\t\t\t");
     printf("Intel 80860\n");
     break;
 
   case EM_MIPS:
-    printf("  Machine:\t\t\t\t");
     printf("MIPS RS3000\n");
     break;
 
   case EM_PARISC:
-    printf("  Machine:\t\t\t\t");
     printf("HP/PA\n");
     break;
 
   case EM_SPARC32PLUS:
-    printf("  Machine:\t\t\t\t");
     printf("SPARC with enhanced instruction set\n");
     break;
 
   case EM_PPC:
-    printf("  Machine:\t\t\t\t");
     printf("PowerPC\n");
     break;
 
   case EM_PPC64:
-    printf("  Machine:\t\t\t\t");
     printf("PowerPC 64-bit\n");
     break;
 
   case EM_S390:
-    printf("  Machine:\t\t\t\t");
     printf("IBM S/390\n");
     break;
 
   case EM_ARM:
-    printf("  Machine:\t\t\t\t");
     printf("Advanced RISC Machines (ARM)\n");
     break;
 
   case EM_SH:
-    printf("  Machine:\t\t\t\t");
     printf("Renesas SuperH\n");
     break;
 
   case EM_SPARCV9:
-    printf("  Machine:\t\t\t\t");
     printf("SPARC v9 64-bit\n");
     break;
 
   case EM_IA_64:
-    printf("  Machine:\t\t\t\t");
     printf("Intel Itanium\n");
     break;
 
   case EM_X86_64:
-    printf("  Machine:\t\t\t\t");
     printf("AMD x86-64\n");
     break;
 
   case EM_VAX:
-    printf("  Machine:\t\t\t\t");
     printf("DEC Vax\n");
     break;
 
   case EM_NONE:
-    printf("Error: An unknown machine\n");
-    exit(EXIT_FAILURE);
+    printf("unknown machine\n");
     break;
+
   }
 }
 
@@ -274,6 +262,10 @@ void header_print_version(Elf32_Word version)
   case EV_CURRENT:
     printf("0x1\n");
     break;
+
+  default:
+    printf("%02" PRIx32 "\n", version);
+    break;
   }
 }
 
@@ -286,14 +278,14 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("%d (bytes into file)\n", ehdr->e_phoff);
 
   printf("  Start of section headers:\t\t");
-  printf("%d (bytes into file)\n", ehdr->e_shoff);
+  printf("%hx (bytes into file)\n", ehdr->e_shoff);
 
   // print_flags(ehdr->e_flags);
   printf("  Flags: \t\t\t\t");
   printf("0x%x\n", ehdr->e_flags);
 
   printf("  Size of this header:\t\t\t");
-  printf("%d (bytes)\n", ehdr->e_ehsize);
+  printf("%hx (bytes)\n", ehdr->e_ehsize);
 
   printf("  Size of program headers:\t\t");
   printf("%d (bytes)\n", ehdr->e_phentsize);
@@ -305,10 +297,10 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("%d (bytes)\n", ehdr->e_shentsize);
 
   printf("  Number of section headers:\t\t");
-  printf("%d\n", ehdr->e_shnum);
+  printf("%hx\n", ehdr->e_shnum);
 
   printf("  Section header string table index:\t");
-  printf("%d\n", ehdr->e_shstrndx);
+  printf("%hx\n", ehdr->e_shstrndx);
 }
 
 void print_entete(Elf32_Ehdr *ehdr)
