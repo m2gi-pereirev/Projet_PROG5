@@ -57,6 +57,6 @@ bool bitopened(void);
  */
 void section_headers_start(Elf32_Off offset, Elf32_Half shstrndx);
 
-void read(Elf32_Ehdr *ehdr);
+// void read(Elf32_Ehdr *ehdr);
 
 #endif

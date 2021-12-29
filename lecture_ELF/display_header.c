@@ -247,7 +247,6 @@ void header_print_machine(Elf32_Half machine)
   case EM_NONE:
     printf("unknown machine\n");
     break;
-
   }
 }
 
