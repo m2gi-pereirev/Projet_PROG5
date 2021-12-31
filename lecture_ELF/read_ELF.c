@@ -1,5 +1,73 @@
 #include "read_ELF.h"
 
+void options_read(int argc, char **argv, Exec_options *exec_op, char **files)
+{
+  const char *const short_options = "haHS";
+  // Lecture des arguments
+  while (1)
+  {
+    static struct option long_options[] = {
+        {"help", no_argument, 0, 'h'},
+        {"all", no_argument, 0, 'a'},
+        {"file-header", no_argument, 0, 'H'},
+        {"section-headers", no_argument, 0, 'S'},
+        {"sections", no_argument, 0, 'S'},
+        {0, 0, 0, 0}};
+
+    int option_index = 0;
+    int c = getopt_long(argc, argv, short_options, long_options, &option_index);
+
+    if (c == -1)
+      break;
+
+    switch (c)
+    {
+    case 'h':
+      print_usage(stdout, EXIT_SUCCESS, argv[0]);
+
+    case 'a':
+      break;
+
+    case 'H':
+      exec_op->all = false;
+      exec_op->header = true;
+      break;
+
+    case 'S':
+      exec_op->all = false;
+      exec_op->section_headers = true;
+      break;
+
+    case '?':
+      print_usage(stderr, EXIT_FAILURE, argv[0]);
+
+    default:
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  if (optind == argc)
+    print_usage(stderr, EXIT_FAILURE, argv[0]);
+  else if (optind == argc - 1)
+  {
+    exec_op->nb_files = 1;
+    files = malloc(sizeof(char *));
+    ++optind;
+    files[0] = malloc(sizeof(char) * strlen(argv[optind]));
+    strcpy(files[0], argv[optind]);
+  }
+  else
+  {
+    exec_op->nb_files = argc - optind;
+    files = malloc(sizeof(char *) * exec_op->nb_files);
+    for (int i = 0; i < argc - optind; i++)
+    {
+      files[i] = malloc(sizeof(char) * strlen(argv[optind + 1 + i]));
+      files[i] = argv[optind + 1 + i];
+    }
+  }
+}
+
 void init_execution(int argc, char **argv, Exec_options *exec_op, char **files)
 {
   exec_op->all = true;
@@ -14,18 +82,18 @@ void header_read(Elf32_Ehdr *ehdr, FILE *filename)
   fread(ehdr, 1, sizeof(Elf32_Ehdr), filename);
 }
 
-void section_read(Elf32_Shdr *shdr)
+void section_headers_read(Elf32_Shdr *shdr)
 {
-  shdr->sh_name = octetread(sizeof(shdr->sh_name));
-  shdr->sh_type = octetread(sizeof(shdr->sh_type));
-  shdr->sh_flags = octetread(sizeof(shdr->sh_flags));
-  shdr->sh_addr = octetread(sizeof(shdr->sh_addr));
-  shdr->sh_offset = octetread(sizeof(shdr->sh_offset));
-  shdr->sh_size = octetread(sizeof(shdr->sh_size));
-  shdr->sh_link = octetread(sizeof(shdr->sh_link));
-  shdr->sh_info = octetread(sizeof(shdr->sh_info));
-  shdr->sh_addralign = octetread(sizeof(shdr->sh_addralign));
-  shdr->sh_entsize = octetread(sizeof(shdr->sh_entsize));
+  // shdr->sh_name = octetread(sizeof(shdr->sh_name));
+  // shdr->sh_type = octetread(sizeof(shdr->sh_type));
+  // shdr->sh_flags = octetread(sizeof(shdr->sh_flags));
+  // shdr->sh_addr = octetread(sizeof(shdr->sh_addr));
+  // shdr->sh_offset = octetread(sizeof(shdr->sh_offset));
+  // shdr->sh_size = octetread(sizeof(shdr->sh_size));
+  // shdr->sh_link = octetread(sizeof(shdr->sh_link));
+  // shdr->sh_info = octetread(sizeof(shdr->sh_info));
+  // shdr->sh_addralign = octetread(sizeof(shdr->sh_addralign));
+  // shdr->sh_entsize = octetread(sizeof(shdr->sh_entsize));
 }
 
 void header_endianess(Elf32_Ehdr *ehdr)
@@ -88,71 +156,7 @@ void run(Exec_options *exec_op, char **files)
         printf("There is no section in this file !\n");
       }
     }
-    free(filename);
-  }
-}
-
-void options_read(int argc, char **argv, Exec_options *exec_op, char **files)
-{
-  const char *const short_options = "haHS";
-  // Lecture des arguments
-  while (1)
-  {
-    static struct option long_options[] = {
-        {"help", no_argument, 0, 'h'},
-        {"all", no_argument, 0, 'a'},
-        {"file-header", no_argument, 0, 'H'},
-        {"section-headers", no_argument, 0, 'S'},
-        {"sections", no_argument, 0, 'S'},
-        {0, 0, 0, 0}};
-
-    int option_index = 0;
-    int c = getopt_long(argc, argv, short_options, long_options, &option_index);
-
-    if (c == -1)
-      break;
-
-    switch (c)
-    {
-    case 'h':
-      print_usage(stdout, EXIT_SUCCESS, argv[0]);
-
-    case 'a':
-      break;
-
-    case 'H':
-      exec_op->all = false;
-      exec_op->header = true;
-      break;
-
-    case 'S':
-      exec_op->all = false;
-      exec_op->section_headers = true;
-      break;
-
-    case '?':
-      print_usage(stderr, EXIT_FAILURE, argv[0]);
-
-    default:
-      exit(EXIT_FAILURE);
-    }
-  }
-
-  if (optind == argc)
-    print_usage(stderr, EXIT_FAILURE, argv[0]);
-  else if (optind == argc - 1)
-  {
-    exec_op->nb_files = 1;
-    files[0] = argv[++optind];
-  }
-  else
-  {
-    exec_op->nb_files = argc - optind;
-    files = malloc(sizeof(char *) * exec_op->nb_files);
-    for (int i = 0; i < argc - optind; i++)
-    {
-      files[i] = argv[optind + i];
-    }
+    fclose(filename);
   }
 }
 
@@ -164,7 +168,7 @@ int main(int argc, char *argv[])
   if (argc < 2)
     print_usage(stderr, EXIT_FAILURE, argv[0]);
 
-  init_execution(argc, argv, &exec_op, &files);
+  init_execution(argc, argv, &exec_op, files);
 
   run(&exec_op, files);
 

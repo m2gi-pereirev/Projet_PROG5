@@ -9,6 +9,7 @@
 #include <elf.h>
 #include <byteswap.h>
 #include <getopt.h>
+#include <assert.h>
 
 #include "display.h"
 
