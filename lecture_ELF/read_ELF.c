@@ -1,24 +1,18 @@
 #include "read_ELF.h"
 
-const char* program_name;
-static int verbose_flags;
+void init_execution(int argc, char **argv, Exec_options *exec_op, char **files)
+{
+  exec_op->all = true;
+  exec_op->header = false;
+  exec_op->section_headers = false;
 
-// void section_read(Elf32_Ehdr *ehdr, Elf32_Shdr *shdr)
-// {
-//   for (int i = 0; i < ehdr->e_shnum; i++)
-//   {
-//     octetread_section(&shdr[i].sh_name, sizeof(shdr[i].sh_name));
-//     octetread_section(&shdr[i].sh_type, sizeof(shdr[i].sh_type));
-//     octetread_section(&shdr[i].sh_flags, sizeof(shdr[i].sh_flags));
-//     octetread_section(&shdr[i].sh_addr, sizeof(shdr[i].sh_addr));
-//     octetread_section(&shdr[i].sh_offset, sizeof(shdr[i].sh_offset));
-//     octetread_section(&shdr[i].sh_size, sizeof(shdr[i].sh_size));
-//     octetread_section(&shdr[i].sh_link, sizeof(shdr[i].sh_link));
-//     octetread_section(&shdr[i].sh_info, sizeof(shdr[i].sh_info));
-//     octetread_section(&shdr[i].sh_addralign, sizeof(shdr[i].sh_addralign));
-//     octetread_section(&shdr[i].sh_entsize, sizeof(shdr[i].sh_entsize));
-//   }
-// }
+  options_read(argc, argv, exec_op, files);
+}
+
+void header_read(Elf32_Ehdr *ehdr, FILE *filename)
+{
+  fread(ehdr, 1, sizeof(Elf32_Ehdr), filename);
+}
 
 void section_read(Elf32_Shdr *shdr)
 {
@@ -36,59 +30,81 @@ void section_read(Elf32_Shdr *shdr)
 
 void header_endianess(Elf32_Ehdr *ehdr)
 {
-  if (ehdr->e_ident[EI_DATA] == ELFDATA2MSB)
+  ehdr->e_type = __bswap_16(ehdr->e_type);
+  ehdr->e_machine = __bswap_16(ehdr->e_machine);
+  ehdr->e_version = __bswap_32(ehdr->e_version);
+  ehdr->e_entry = __bswap_32(ehdr->e_entry);
+  ehdr->e_phoff = __bswap_32(ehdr->e_phoff);
+  ehdr->e_shoff = __bswap_32(ehdr->e_shoff);
+  ehdr->e_flags = __bswap_32(ehdr->e_flags);
+  ehdr->e_ehsize = __bswap_16(ehdr->e_ehsize);
+  ehdr->e_phentsize = __bswap_16(ehdr->e_phentsize);
+  ehdr->e_phnum = __bswap_16(ehdr->e_phnum);
+  ehdr->e_shentsize = __bswap_16(ehdr->e_shentsize);
+  ehdr->e_shnum = __bswap_16(ehdr->e_shnum);
+  ehdr->e_shstrndx = __bswap_16(ehdr->e_shstrndx);
+}
+
+void run(Exec_options *exec_op, char **files)
+{
+  FILE *filename;
+  Elf32_Ehdr ehdr;
+  Elf32_Shdr shdr;
+
+  for (int i = 0; i < exec_op->nb_files; i++)
   {
-    ehdr->e_type = __bswap_16(ehdr->e_type);
-    ehdr->e_machine = __bswap_16(ehdr->e_machine);
-    ehdr->e_version = __bswap_32(ehdr->e_version);
-    ehdr->e_entry = __bswap_32(ehdr->e_entry);
-    ehdr->e_phoff = __bswap_32(ehdr->e_phoff);
-    ehdr->e_shoff = __bswap_32(ehdr->e_shoff);
-    ehdr->e_flags = __bswap_32(ehdr->e_flags);
-    ehdr->e_ehsize = __bswap_16(ehdr->e_ehsize);
-    ehdr->e_phentsize = __bswap_16(ehdr->e_phentsize);
-    ehdr->e_phnum = __bswap_16(ehdr->e_phnum);
-    ehdr->e_shentsize = __bswap_16(ehdr->e_shentsize);
-    ehdr->e_shnum = __bswap_16(ehdr->e_shnum);
-    ehdr->e_shstrndx = __bswap_16(ehdr->e_shstrndx);
+    filename = fopen(files[i], "rb");
+    assert(filename != NULL);
+
+    if (exec_op->nb_files > 1)
+      printf("File: %s\n", files[i]);
+
+    // READING
+    header_read(&ehdr, filename);
+    if (ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
+    {
+      exec_op->big_endian_file = true;
+      header_endianess(&ehdr);
+    }
+
+    // DISPLAY
+    if (exec_op->all)
+    {
+      section_headers_read(&shdr);
+    }
+    else
+    {
+      if (exec_op->header)
+      {
+        print_entete(&ehdr);
+      }
+
+      if (exec_op->section_headers && ehdr.e_shnum > 0)
+      {
+        // print_section();
+      }
+      else
+      {
+        printf("There is no section in this file !\n");
+      }
+    }
+    free(filename);
   }
 }
 
-void print_usage(FILE* stream, int exit_code)
+void options_read(int argc, char **argv, Exec_options *exec_op, char **files)
 {
-  fprintf(stream, "Usage: %s <option(s)> elf-file(s)\n", program_name);
-  fprintf(stream, " Display information about the contents of ELF format files\n Options are:\n");
-  fprintf(stream,
-  "  -a  --all              Equivalent to: -H -S\n"
-  "  -H  --file-header      Display the ELF file header\n"
-  "  -S  --section-headers  Display the sections' header\n"
-  "      --sections         An alias for --section-headers\n"
-  "  -h  --help             Display this information\n");
-  exit(exit_code);
-}
-
-int main(int argc, char *argv[])
-{
-  FILE *file = NULL;
-  bool read_all = true, only_file_header = false, only_section_headers = false;
-  const char* const short_options = "haHS";
-
-  program_name = argv[0];
-
-  if (argc < 2)
-    print_usage(stderr, EXIT_FAILURE);
-
+  const char *const short_options = "haHS";
   // Lecture des arguments
   while (1)
   {
     static struct option long_options[] = {
-      {"help", no_argument, 0, 'h'},
-      {"all", no_argument, 0, 'a'},
-      {"file-header", no_argument, 0, 'H'},
-      {"section-headers", no_argument, 0, 'S'},
-      {"sections", no_argument, 0, 'S'},
-      {0, 0, 0, 0}
-    };
+        {"help", no_argument, 0, 'h'},
+        {"all", no_argument, 0, 'a'},
+        {"file-header", no_argument, 0, 'H'},
+        {"section-headers", no_argument, 0, 'S'},
+        {"sections", no_argument, 0, 'S'},
+        {0, 0, 0, 0}};
 
     int option_index = 0;
     int c = getopt_long(argc, argv, short_options, long_options, &option_index);
@@ -98,67 +114,59 @@ int main(int argc, char *argv[])
 
     switch (c)
     {
-    // case 0:
-    //   if (long_options[option_index].flag != 0)
-    //     break;
-    //   printf("option %s", long_options[option_index].name);
-    //   if (optarg)
-    //     printf("with arg %s", optarg);
-    //   printf("\n");
-    //   break;
-
     case 'h':
-      print_usage(stdout, EXIT_SUCCESS);
+      print_usage(stdout, EXIT_SUCCESS, argv[0]);
 
     case 'a':
-      read_all = true;
       break;
 
     case 'H':
-      read_all = false;
-
+      exec_op->all = false;
+      exec_op->header = true;
       break;
 
     case 'S':
-      printf("option -S\n");
+      exec_op->all = false;
+      exec_op->section_headers = true;
       break;
 
     case '?':
-      print_usage(stderr, EXIT_FAILURE);
+      print_usage(stderr, EXIT_FAILURE, argv[0]);
 
     default:
       exit(EXIT_FAILURE);
     }
   }
 
-  if (verbose_flags)
-    puts("verbose flag is set");
-
-  if (optind < argc)
+  if (optind == argc)
+    print_usage(stderr, EXIT_FAILURE, argv[0]);
+  else if (optind == argc - 1)
   {
-    printf("non-option ARGV-element: ");
-    while (optind < argc)
-      printf("%s ", argv[optind++]);
-    printf("\n");
+    exec_op->nb_files = 1;
+    files[0] = argv[++optind];
   }
   else
-    print_usage(stderr, EXIT_FAILURE);
+  {
+    exec_op->nb_files = argc - optind;
+    files = malloc(sizeof(char *) * exec_op->nb_files);
+    for (int i = 0; i < argc - optind; i++)
+    {
+      files[i] = argv[optind + i];
+    }
+  }
+}
 
+int main(int argc, char *argv[])
+{
+  char **files = NULL;
+  Exec_options exec_op;
 
-  return 0;
+  if (argc < 2)
+    print_usage(stderr, EXIT_FAILURE, argv[0]);
 
-  // Elf32_Ehdr ehdr;
-  // Elf32_Shdr shdr;
-  // else
-  // {
-  //   fprintf(stderr, "Usage:\n%s <option(s)> elf-file(s)\n", argv[0]);
-  //   // help();
-  //   return -1;
-  // }
+  init_execution(argc, argv, &exec_op, &files);
 
-  // read(&ehdr);
-  // endianess(&ehdr);
-  // print_entete(&ehdr);
+  run(&exec_op, files);
 
   // if (ehdr->e_shnum > 0)
   // {
@@ -180,15 +188,5 @@ int main(int argc, char *argv[])
   //   printf("There is no section in this file !\n");
   //   return -1;
   // }
-  // int i;
-  // long x = 0x112A380;
-  // unsigned char *ptr = (unsigned char *)&x;
-  // printf("x in hex: %lx\n", x);
-  // printf("x by bytes: ");
-  // for (i = 0; i < sizeof(long); i++)
-  //   printf("%x\t", ptr[i]);
-  // printf("\n");
-
-  bitclose() ? 0 : fprintf(stderr, "Cannot close file !\n");
   return 0;
 }

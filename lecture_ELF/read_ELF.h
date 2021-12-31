@@ -10,23 +10,22 @@
 #include <byteswap.h>
 #include <getopt.h>
 
-#include "bfile.h"
-#include "display_header.h"
-#include "display_section.h"
+#include "display.h"
 
 typedef struct execution_options
 {
-  bool verbose;
-  bool all;
-  bool header;
-  bool section_header;
+  int nb_files;
+  bool all; // display all the section
+  bool header; // display only the header file
+  bool section_headers; // display only section headers
+  bool big_endian_file;
 } Exec_options;
 
 /**
  * @brief Read the current file and fill the header's structure
  * @param ehdr structure of header for 32-bit architecture
  */
-void header_read(Elf32_Ehdr *ehdr);
+void header_read(Elf32_Ehdr *ehdr, FILE *filename);
 
 /**
  * @brief Read the current file and fill the section's structure
