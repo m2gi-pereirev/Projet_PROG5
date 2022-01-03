@@ -1,7 +1,8 @@
 #include "read_ELF.h"
 
-void options_read(int argc, char **argv, Exec_options *exec_op, char *files[])
+char **options_read(int argc, char **argv, Exec_options *exec_op)
 {
+  char **files = NULL;
   const char *const short_options = "vhaHS";
   // Lecture des arguments
   while (1)
@@ -23,14 +24,15 @@ void options_read(int argc, char **argv, Exec_options *exec_op, char *files[])
 
     switch (c)
     {
-    case 'v':
+    case 'v': // verbose activated
       exec_op->verbose = true;
       break;
 
-    case 'h':
+    case 'h': // help display
+      free(files);
       print_usage(stdout, EXIT_SUCCESS, argv[0]);
 
-    case 'a':
+    case 'a': // all informations display
       break;
 
     case 'H': // Header display
@@ -38,41 +40,44 @@ void options_read(int argc, char **argv, Exec_options *exec_op, char *files[])
       exec_op->header = true;
       break;
 
-    case 'S':
+    case 'S': // Section headers display
       exec_op->all = false;
       exec_op->section_headers = true;
       break;
 
-    case '?':
+    case '?': // error usage
       print_usage(stderr, EXIT_FAILURE, argv[0]);
 
-    default:
+    default: // Error
       exit(EXIT_FAILURE);
     }
   }
 
-  if (optind == argc)
+  if (optind == argc) // If there are no given files
+  {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
-  else if (optind == argc - 1)
+  }
+  else if (optind == argc - 1) // If there is only one file given
   {
     exec_op->nb_files = 1;
-    files[0] = malloc(100 * sizeof(char));
-    strcpy(files[0], argv[optind]);
+    files = calloc(1, sizeof(char *));                         // Allocation of the array to a single element to store the file name
+    files[0] = calloc(strlen(argv[optind]) + 1, sizeof(char)); // Allocation to store the file path
+    strcpy(files[0], argv[optind]);                            // Storing the file path
   }
-  else
+  else // if there are several files given
   {
-    exec_op->nb_files = argc - optind;
-    files = realloc(files, exec_op->nb_files * sizeof(char*));
+    exec_op->nb_files = argc - optind;                 // Number of file paths given
+    files = calloc(exec_op->nb_files, sizeof(char *)); // Multi-element array allocation to store file paths.
     for (int i = 0; i < exec_op->nb_files; i++)
     {
-      files[i] = malloc(sizeof(char) * strlen(argv[optind + i]));
-      strcpy(files[i], argv[optind + i]);
+      files[i] = calloc(strlen(argv[optind + i]) + 1, sizeof(char)); // Allocation to store the file path
+      strcpy(files[i], argv[optind + i]);                            // Storing the file path
     }
-    fprintf(stderr, "\n\n");
   }
+  return files;
 }
 
-void init_execution(int argc, char **argv, Exec_options *exec_op, char **files)
+char **init_execution(int argc, char **argv, Exec_options *exec_op)
 {
   exec_op->all = true;
   exec_op->header = false;
@@ -80,7 +85,7 @@ void init_execution(int argc, char **argv, Exec_options *exec_op, char **files)
   exec_op->verbose = false;
   exec_op->big_endian_file = false;
 
-  options_read(argc, argv, exec_op, files);
+  return options_read(argc, argv, exec_op);
 }
 
 void header_read(Elf32_Ehdr *ehdr, FILE *filename)
@@ -104,83 +109,110 @@ void section_headers_read(Elf32_Shdr *shdr)
 
 void run(Exec_options *exec_op, char *files[])
 {
-  FILE *filename;
-  Elf32_Ehdr ehdr;
-  Elf32_Shdr shdr;
+  FILE *filename = NULL;
+  Elf32_Ehdr ehdr; // File header informations structure
+  Elf32_Shdr shdr; // Section header informations structure
 
   for (int i = 0; i < exec_op->nb_files; i++)
   {
-    filename = fopen(files[i], "rb"); // opening the file for binary read
+    filename = fopen(files[i], "rb"); // Opening the file for binary read
     // Checking file openned
     if (filename == NULL)
     {
-      if(exec_op->nb_files == 1) // if only one file
+      if (exec_op->nb_files == 1) // if only one file
       {
-        printf("read-elf: Error: '%s': No such file\n", files[i]);
+        printf("read-elf: Error: '%s': No such file\n", files[0]);
+        free(files[i]);
+        free(files);
         exit(EXIT_FAILURE);
       }
-      else // if there are multiple files
+      else // if there are several files
       {
         printf("read-elf: Error: '%s': No such file\n", files[i]);
       }
-    }
-
-    // if there are several files to read
-    if (exec_op->nb_files > 1)
-      printf("File: %s\n", files[i]);
-
-    (exec_op->verbose) ? fprintf(stderr, "\033[36mReading the file header\033[37m\n") : 0;
-    // READING HEADER
-    header_read(&ehdr, filename);
-
-    // Detection of big or little endian
-    if (ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
-    {
-      (exec_op->verbose) ? fprintf(stderr, "\033[36mFile is in big endian, switch to little endian\033[37m\n") : 0;
-      exec_op->big_endian_file = true;
-      header_endianess(&ehdr);
-    }
-
-
-    if (exec_op->all) // display all of the elf file
-    {
-      print_entete(&ehdr); // display header's file
-
-      (exec_op->verbose) ? fprintf(stderr, "\033[36mReading section header's\n") : 0;
-      // Reading section headers
-      section_headers_read(&shdr);
     }
     else
     {
-      if (exec_op->header)
+      // if there are several files to read
+      if (exec_op->nb_files > 1)
+        printf("File: %s\n", files[i]);
+
+      (exec_op->verbose) ? fprintf(stderr, "\033[36mReading the file header\033[37m\n") : 0;
+      // READING HEADER
+      header_read(&ehdr, filename);
+
+      // Detection of big or little endian
+      if (ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
       {
-        print_entete(&ehdr);
+        (exec_op->verbose) ? fprintf(stderr, "\033[36mFile is in big endian, switch to little endian\033[37m\n") : 0;
+        exec_op->big_endian_file = true;
+        header_endianess(&ehdr);
       }
 
-      if (exec_op->section_headers && ehdr.e_shnum > 0)
+      // Display all informations
+      if (exec_op->all) // display all of the elf file
       {
-        // print_section();
+        print_entete(&ehdr); // display header's file
+
+        // SECTION HEADERS
+
+        (exec_op->verbose) ? fprintf(stderr, "\033[36mReading section header's\n") : 0;
+
+        if (ehdr.e_shnum > 0)
+        {
+          section_headers_read(&shdr);  // Reading section headers
+          if (exec_op->big_endian_file) // if file is in big endian, transform to little endian
+            section_headers_endianess(&shdr);
+          // print_section();
+        }
+        // if no sections
+        else if (ehdr.e_shnum == 0)
+          printf("There is no section in this file !\n");
       }
-      else if (exec_op->section_headers && ehdr.e_shnum == 0)
+
+      // Display choosen informations selected by users
+      if (!exec_op->all)
       {
-        printf("There is no section in this file !\n");
+        if (exec_op->header)
+        {
+          print_entete(&ehdr); // Print file header
+        }
+
+        if (exec_op->section_headers && ehdr.e_shnum > 0)
+        {
+          // print_section();
+        }
+        else if (exec_op->section_headers && ehdr.e_shnum == 0)
+        {
+          printf("There is no section in this file !\n");
+        }
       }
+
+      // Closing file
+      fclose(filename);
+
+      // Conditions for displaying multiple files
+      if (exec_op->nb_files > 1)
+        printf("\n");
+
+      (exec_op->verbose) ? fprintf(stderr, "\033[36mEnd of file reading\033[37m\n\n") : 0;
+
     }
-    fclose(filename);
+    free(files[i]);
+  }
+}
 
-    // Conditions for displaying multiple files
-    if (exec_op->nb_files > 1)
-      printf("\n");
-
-    (exec_op->verbose) ? fprintf(stderr, "\033[36mEnd of file reading\033[37m\n") : 0;
-
-    free(files[i]); // We release the entries because we don't need them anymore
+void display_settings(Exec_options *exec_op, char *files[])
+{
+  fprintf(stderr, "nb files: %d\n", exec_op->nb_files);
+  for (int i = 0; i < exec_op->nb_files; i++)
+  {
+    fprintf(stderr, "files %d: %s\n", i, files[i]);
   }
 }
 
 int main(int argc, char *argv[])
 {
-  char **files = malloc(sizeof(char *)); // At least one file must be entered
   Exec_options exec_op;
 
   // Checking the minimum number of arguments
@@ -188,8 +220,9 @@ int main(int argc, char *argv[])
     print_usage(stderr, EXIT_FAILURE, argv[0]);
 
   // Input detections
-  init_execution(argc, argv, &exec_op, files);
+  char **files = init_execution(argc, argv, &exec_op);
   (exec_op.verbose) ? fprintf(stderr, "\033[36mInitialisation succeed !\033[37m\n") : 0;
+  (exec_op.verbose) ? display_settings(&exec_op, files) : 0;
 
   // Execution
   run(&exec_op, files);

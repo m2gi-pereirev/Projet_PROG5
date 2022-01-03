@@ -19,5 +19,14 @@ void header_endianess(Elf32_Ehdr *ehdr)
 
 void section_headers_endianess(Elf32_Shdr *shdr)
 {
-
+  shdr->sh_name = __bswap_32(shdr->sh_name);
+	shdr->sh_type = __bswap_32(shdr->sh_type);
+	shdr->sh_flags = __bswap_32(shdr->sh_flags);
+	shdr->sh_addr = __bswap_32(shdr->sh_addr);
+  shdr->sh_offset = __bswap_32(shdr->sh_offset);
+	shdr->sh_size = __bswap_32(shdr->sh_size);
+	shdr->sh_link = __bswap_32(shdr->sh_link);
+	shdr->sh_info = __bswap_32(shdr->sh_info);
+	shdr->sh_addralign = __bswap_32(shdr->sh_addralign);
+	shdr->sh_entsize = __bswap_32(shdr->sh_entsize);
 }
