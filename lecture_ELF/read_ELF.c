@@ -95,23 +95,6 @@ void section_headers_read(Elf32_Shdr *shdr)
   // shdr->sh_entsize = octetread(sizeof(shdr->sh_entsize));
 }
 
-void header_endianess(Elf32_Ehdr *ehdr)
-{
-  ehdr->e_type = __bswap_16(ehdr->e_type);
-  ehdr->e_machine = __bswap_16(ehdr->e_machine);
-  ehdr->e_version = __bswap_32(ehdr->e_version);
-  ehdr->e_entry = __bswap_32(ehdr->e_entry);
-  ehdr->e_phoff = __bswap_32(ehdr->e_phoff);
-  ehdr->e_shoff = __bswap_32(ehdr->e_shoff);
-  ehdr->e_flags = __bswap_32(ehdr->e_flags);
-  ehdr->e_ehsize = __bswap_16(ehdr->e_ehsize);
-  ehdr->e_phentsize = __bswap_16(ehdr->e_phentsize);
-  ehdr->e_phnum = __bswap_16(ehdr->e_phnum);
-  ehdr->e_shentsize = __bswap_16(ehdr->e_shentsize);
-  ehdr->e_shnum = __bswap_16(ehdr->e_shnum);
-  ehdr->e_shstrndx = __bswap_16(ehdr->e_shstrndx);
-}
-
 void run(Exec_options *exec_op, char *files[])
 {
   FILE *filename;
@@ -126,7 +109,7 @@ void run(Exec_options *exec_op, char *files[])
     if (exec_op->nb_files > 1)
       printf("File: %s\n", files[i]);
 
-    // READING
+    // READING HEADER
     header_read(&ehdr, filename);
     if (ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
     {
@@ -156,9 +139,12 @@ void run(Exec_options *exec_op, char *files[])
       }
     }
     fclose(filename);
+
+    // Conditions for displaying multiple files
     if (exec_op->nb_files > 1)
       printf("\n");
-    free(files[i]);
+
+    free(files[i]); // We release the entries because we don't need them anymore
   }
 }
 

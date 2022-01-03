@@ -7,10 +7,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <elf.h>
-#include <byteswap.h>
 #include <getopt.h>
 #include <assert.h>
 
+#include "endianess.h"
 #include "display.h"
 
 typedef struct execution_options
