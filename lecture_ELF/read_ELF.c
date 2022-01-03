@@ -156,19 +156,21 @@ void run(Exec_options *exec_op, char *files[])
       }
     }
     fclose(filename);
-    // free(files[i]);
+    if (exec_op->nb_files > 1)
+      printf("\n");
+    free(files[i]);
   }
 }
 
 int main(int argc, char *argv[])
 {
-  char **files = malloc(sizeof(char*));
+  char **files = malloc(sizeof(char *)); // At least one file must be entered
   Exec_options exec_op;
 
   if (argc < 2)
     print_usage(stderr, EXIT_FAILURE, argv[0]);
 
-  init_execution(argc, argv, &exec_op, files);
+  init_execution(argc, argv, &exec_op, files); // Input detections
 
   run(&exec_op, files);
 
