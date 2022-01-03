@@ -145,7 +145,7 @@ void header_print_type(Elf32_Half type)
   switch (type)
   {
   case ET_REL:
-    printf("A relocatable file\n");
+    printf("REL (relocatable file)\n");
     break;
   case ET_EXEC:
     printf("An executable file\n");
@@ -161,14 +161,13 @@ void header_print_type(Elf32_Half type)
     break;
 
   default:
-    printf("%01" PRIx32 "\n", type);
+    printf("%d" PRIx32 "\n", type);
     break;
   }
 }
 
 void header_print_machine(Elf32_Half machine)
 {
-  printf("%hx", machine);
   printf("  Machine:\t\t\t\t");
   switch (machine)
   {
@@ -277,14 +276,14 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("%d (bytes into file)\n", ehdr->e_phoff);
 
   printf("  Start of section headers:\t\t");
-  printf("%hx (bytes into file)\n", ehdr->e_shoff);
+  printf("%d (bytes into file)\n", ehdr->e_shoff);
 
   // print_flags(ehdr->e_flags);
   printf("  Flags: \t\t\t\t");
   printf("0x%x\n", ehdr->e_flags);
 
   printf("  Size of this header:\t\t\t");
-  printf("%hx (bytes)\n", ehdr->e_ehsize);
+  printf("%d (bytes)\n", ehdr->e_ehsize);
 
   printf("  Size of program headers:\t\t");
   printf("%d (bytes)\n", ehdr->e_phentsize);
@@ -296,10 +295,10 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr)
   printf("%d (bytes)\n", ehdr->e_shentsize);
 
   printf("  Number of section headers:\t\t");
-  printf("%hx\n", ehdr->e_shnum);
+  printf("%d\n", ehdr->e_shnum);
 
   printf("  Section header string table index:\t");
-  printf("%hx\n", ehdr->e_shstrndx);
+  printf("%d\n", ehdr->e_shstrndx);
 }
 
 void print_entete(Elf32_Ehdr *ehdr)

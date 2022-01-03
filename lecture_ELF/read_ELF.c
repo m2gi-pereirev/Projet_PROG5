@@ -1,6 +1,6 @@
 #include "read_ELF.h"
 
-void options_read(int argc, char **argv, Exec_options *exec_op, char **files)
+void options_read(int argc, char **argv, Exec_options *exec_op, char *files[])
 {
   const char *const short_options = "haHS";
   // Lecture des arguments
@@ -51,20 +51,19 @@ void options_read(int argc, char **argv, Exec_options *exec_op, char **files)
   else if (optind == argc - 1)
   {
     exec_op->nb_files = 1;
-    files = malloc(sizeof(char *));
-    ++optind;
-    files[0] = malloc(sizeof(char) * strlen(argv[optind]));
+    files[0] = malloc(100 * sizeof(char));
     strcpy(files[0], argv[optind]);
   }
   else
   {
     exec_op->nb_files = argc - optind;
-    files = malloc(sizeof(char *) * exec_op->nb_files);
-    for (int i = 0; i < argc - optind; i++)
+    files = realloc(files, exec_op->nb_files * sizeof(char*));
+    for (int i = 0; i < exec_op->nb_files; i++)
     {
-      files[i] = malloc(sizeof(char) * strlen(argv[optind + 1 + i]));
-      files[i] = argv[optind + 1 + i];
+      files[i] = malloc(sizeof(char) * strlen(argv[optind + i]));
+      strcpy(files[i], argv[optind + i]);
     }
+    fprintf(stderr, "\n\n");
   }
 }
 
@@ -113,7 +112,7 @@ void header_endianess(Elf32_Ehdr *ehdr)
   ehdr->e_shstrndx = __bswap_16(ehdr->e_shstrndx);
 }
 
-void run(Exec_options *exec_op, char **files)
+void run(Exec_options *exec_op, char *files[])
 {
   FILE *filename;
   Elf32_Ehdr ehdr;
@@ -151,18 +150,19 @@ void run(Exec_options *exec_op, char **files)
       {
         // print_section();
       }
-      else
+      else if (exec_op->section_headers && ehdr.e_shnum == 0)
       {
         printf("There is no section in this file !\n");
       }
     }
     fclose(filename);
+    // free(files[i]);
   }
 }
 
 int main(int argc, char *argv[])
 {
-  char **files = NULL;
+  char **files = malloc(sizeof(char*));
   Exec_options exec_op;
 
   if (argc < 2)
@@ -192,5 +192,6 @@ int main(int argc, char *argv[])
   //   printf("There is no section in this file !\n");
   //   return -1;
   // }
+  free(files);
   return 0;
 }
