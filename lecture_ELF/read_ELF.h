@@ -15,11 +15,12 @@
 
 typedef struct execution_options
 {
-  int nb_files;
+  int nb_files; // nb_files passed in arguments
+  bool verbose; // if user's allow verbose of program
   bool all; // display all the section
   bool header; // display only the header file
   bool section_headers; // display only section headers
-  bool big_endian_file;
+  bool big_endian_file; // true if file is in big_endian
 } Exec_options;
 
 /**
