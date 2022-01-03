@@ -3,7 +3,7 @@
 void options_read(int argc, char **argv, Exec_options *exec_op, char *files[])
 {
   const char *const short_options = "haHS";
-  // Lecture des arguments
+  // Reading arguments
   while (1)
   {
     static struct option long_options[] = {
@@ -28,7 +28,7 @@ void options_read(int argc, char **argv, Exec_options *exec_op, char *files[])
     case 'a':
       break;
 
-    case 'H':
+    case 'H': // Header display
       exec_op->all = false;
       exec_op->header = true;
       break;
