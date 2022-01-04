@@ -1,9 +1,9 @@
 #include "read_ELF.h"
 
-char **options_read(int argc, char **argv, Exec_options *exec_op)
+char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option *hexdump)
 {
   char **files = NULL;
-  const char *const short_options = "haHS";
+  const char *const short_options = "haHSx:";
   // Lecture des arguments
   while (1)
   {
@@ -13,6 +13,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
         {"file-header", no_argument, 0, 'H'},
         {"section-headers", no_argument, 0, 'S'},
         {"sections", no_argument, 0, 'S'},
+        {"hex-dump", required_argument, 0, 'x'},
         {0, 0, 0, 0}};
 
     int option_index = 0;
@@ -40,6 +41,22 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
       exec_op->section_headers = true;
       break;
 
+    case 'x': // display a section
+      int tmp;
+      if (sscanf(optarg, "%d", &tmp) == 1) // it's integer
+      {
+        hexdump->is_string = true;
+        hexdump->section_number = atoi(optarg);
+      }
+      else // it's string
+      {
+        hexdump->is_string = false;
+        hexdump->section_name = calloc(strlen(optarg) + 1, sizeof(char));
+        strcpy(hexdump->section_name, optarg);
+      }
+      exec_op->hexdump = true;
+      break;
+
     case '?': // error usage
       print_usage(stderr, EXIT_FAILURE, argv[0]);
 
@@ -52,7 +69,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
-  else if (!exec_op->header && !exec_op->section_headers)
+  else if (!exec_op->header && !exec_op->section_headers && !exec_op->hexdump)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
@@ -76,13 +93,16 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
   return files;
 }
 
-char **init_execution(int argc, char **argv, Exec_options *exec_op)
+char **init_execution(int argc, char **argv, Exec_options *exec_op, hexdump_option *hexdump)
 {
   exec_op->header = false;
   exec_op->section_headers = false;
   exec_op->big_endian_file = false;
+  exec_op->hexdump = true;
 
-  return options_read(argc, argv, exec_op);
+  hexdump->is_string = false;
+
+  return options_read(argc, argv, exec_op, hexdump);
 }
 
 void header_read(Elf32_Ehdr *ehdr, FILE *filename)
@@ -230,17 +250,20 @@ void run(Exec_options *exec_op, char *files[])
 int main(int argc, char *argv[])
 {
   Exec_options exec_op;
+  hexdump_option hexdump;
 
   // Checking the minimum number of arguments
   if (argc < 2)
     print_usage(stderr, EXIT_FAILURE, argv[0]);
 
   // Input detections
-  char **files = init_execution(argc, argv, &exec_op);
+  char **files = init_execution(argc, argv, &exec_op, &hexdump);
 
   // Execution
   run(&exec_op, files);
 
+  if (!hexdump.is_string)
+    free(hexdump.section_name);
   free(files);
   return 0;
 }

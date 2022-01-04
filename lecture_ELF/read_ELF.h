@@ -20,7 +20,15 @@ typedef struct execution_options
   bool header; // display only the header file
   bool section_headers; // display only section headers
   bool big_endian_file; // true if file is in big_endian
+  bool hexdump;
 } Exec_options;
+
+typedef struct hexdump_option
+{
+  bool is_string;
+  int section_number;
+  char *section_name;
+} hexdump_option;
 
 /**
  * @brief Read the current file and fill the header's structure
