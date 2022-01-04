@@ -1,64 +1,264 @@
 #include "read_ELF.h"
 
-void header_read(Elf32_Ehdr *ehdr)
+char **options_read(int argc, char **argv, Exec_options *exec_op)
 {
-  for (int i = 0; i < 16; i++)
-    ehdr->e_ident[i] = octetread(sizeof(unsigned char));
-  ehdr->e_type = octetread(sizeof(ehdr->e_type));
-  ehdr->e_machine = octetread(sizeof(ehdr->e_machine));
-  ehdr->e_version = octetread(sizeof(ehdr->e_version));
-  ehdr->e_entry = octetread(sizeof(ehdr->e_entry));
-  ehdr->e_phoff = octetread(sizeof(ehdr->e_phoff));
-  ehdr->e_shoff = octetread(sizeof(ehdr->e_shoff));
-  ehdr->e_flags = octetread(sizeof(ehdr->e_flags));
-  ehdr->e_ehsize = octetread(sizeof(ehdr->e_ehsize));
-  ehdr->e_phentsize = octetread(sizeof(ehdr->e_phentsize));
-  ehdr->e_phnum = octetread(sizeof(ehdr->e_phnum));
-  ehdr->e_shentsize = octetread(sizeof(ehdr->e_shentsize));
-  ehdr->e_shnum = octetread(sizeof(ehdr->e_shnum));
-  ehdr->e_shstrndx = octetread(sizeof(ehdr->e_shstrndx));
-}
-
-void section_read(Elf32_Shdr *shdr)
-{
-  shdr->sh_name = octetread(sizeof(shdr->sh_name));
-}
-
-int main(int argc, char const *argv[])
-{
-  Elf32_Ehdr *ehdr = malloc(sizeof(Elf32_Ehdr));
-  Elf32_Shdr *shdr = malloc(sizeof(Elf32_Shdr));
-
-  if (argc > 1)
+  char **files = NULL;
+  const char *const short_options = "vhaHS";
+  // Lecture des arguments
+  while (1)
   {
-    bitopen(argv[1]);
-  }
-  else
-  {
-    fprintf(stderr, "Error : only one possible argument\n");
-    return -1;
-  }
+    static struct option long_options[] = {
+        {"verbose", no_argument, 0, 'v'},
+        {"help", no_argument, 0, 'h'},
+        {"all", no_argument, 0, 'a'},
+        {"file-header", no_argument, 0, 'H'},
+        {"section-headers", no_argument, 0, 'S'},
+        {"sections", no_argument, 0, 'S'},
+        {0, 0, 0, 0}};
 
-  header_read(ehdr); // Reading the header
-  affichage_entete(ehdr);
+    int option_index = 0;
+    int c = getopt_long(argc, argv, short_options, long_options, &option_index);
 
-  if (ehdr->e_shnum > 0)
-  {
-    printf("There are %d section header, starting at offset 0x%x", ehdr->e_shnum, ehdr->e_shoff);
-    section_print_display_header();
-    for (int i = 0; i < ehdr->e_shnum; i++)
+    if (c == -1)
+      break;
+
+    switch (c)
     {
-      section_read(shdr);
-      affichage_section(shdr, i);
+    case 'v': // verbose activated
+      exec_op->verbose = true;
+      break;
+
+    case 'h': // help display
+      free(files);
+      print_usage(stdout, EXIT_SUCCESS, argv[0]);
+
+    case 'a': // all informations display
+      exec_op->header = true;
+      exec_op->section_headers = true;
+      break;
+
+    case 'H': // Header display
+      exec_op->header = true;
+      break;
+
+    case 'S': // Section headers display
+      exec_op->section_headers = true;
+      break;
+
+    case '?': // error usage
+      print_usage(stderr, EXIT_FAILURE, argv[0]);
+
+    default: // Error
+      exit(EXIT_FAILURE);
     }
-
   }
-  else
+
+  if (optind == argc) // If there are no given files
   {
-    printf("There is no section in this file !\n");
-    return -1;
+    print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
+  else if (optind == argc - 1) // If there is only one file given
+  {
+    exec_op->nb_files = 1;
+    files = calloc(1, sizeof(char *));                         // Allocation of the array to a single element to store the file name
+    files[0] = calloc(strlen(argv[optind]) + 1, sizeof(char)); // Allocation to store the file path
+    strcpy(files[0], argv[optind]);                            // Storing the file path
+  }
+  else // if there are several files given
+  {
+    exec_op->nb_files = argc - optind;                 // Number of file paths given
+    files = calloc(exec_op->nb_files, sizeof(char *)); // Multi-element array allocation to store file paths.
+    for (int i = 0; i < exec_op->nb_files; i++)
+    {
+      files[i] = calloc(strlen(argv[optind + i]) + 1, sizeof(char)); // Allocation to store the file path
+      strcpy(files[i], argv[optind + i]);                            // Storing the file path
+    }
+  }
+  return files;
+}
 
-  bitclose() ? 0 : fprintf(stderr, "Cannot close file !\n");
+char **init_execution(int argc, char **argv, Exec_options *exec_op)
+{
+  exec_op->header = false;
+  exec_op->section_headers = false;
+  exec_op->verbose = false;
+  exec_op->big_endian_file = false;
+
+  return options_read(argc, argv, exec_op);
+}
+
+void header_read(Elf32_Ehdr *ehdr, FILE *filename)
+{
+  fread(ehdr, 1, sizeof(Elf32_Ehdr), filename);
+}
+
+Elf32_Shdr_named *section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr)
+{
+  Elf32_Shdr_named *shdr_named = calloc(1, sizeof(Elf32_Shdr_named));
+  shdr_named->shnum = ehdr->e_shnum;
+  int last_entry = ehdr->e_shnum - 1;
+  char *Section_Names;
+
+  // Allocation
+  shdr_named->shdr = calloc(shdr_named->shnum, sizeof(Elf32_Shdr));
+  shdr_named->names = calloc(shdr_named->shnum, sizeof(char *));
+
+  // Reading of the last entry
+  fseek(filename, ehdr->e_shoff + last_entry * sizeof(Elf32_Shdr), SEEK_SET);
+  fread(&shdr_named->shdr[last_entry], 1, sizeof(Elf32_Shdr), filename);
+
+  // endianess
+  if (exec_op->big_endian_file)
+    section_headers_endianess(&shdr_named->shdr[last_entry]);
+
+  // Allocation
+  Section_Names = calloc(1, shdr_named->shdr[last_entry].sh_size);
+
+  // Recovering the names of the section headers
+  fseek(filename, shdr_named->shdr[last_entry].sh_offset, SEEK_SET);
+  fread(Section_Names, 1, shdr_named->shdr[last_entry].sh_size, filename);
+
+  // Reading section headers
+  for (int i = 0; i < shdr_named->shnum; i++)
+  {
+    fseek(filename, ehdr->e_shoff + i * sizeof(Elf32_Shdr), SEEK_SET);
+    fread(&shdr_named->shdr[i], 1, sizeof(Elf32_Shdr), filename);
+
+    if (exec_op->big_endian_file)
+      section_headers_endianess(&shdr_named->shdr[i]);
+
+    // Association of the name with the header
+    if (shdr_named->shdr[i].sh_name)
+    {
+      char *name = "";
+      name = Section_Names + shdr_named->shdr[i].sh_name;
+      shdr_named->names[i] = calloc(strlen(name) + 1, sizeof(char));
+      strcpy(shdr_named->names[i], name);
+    }
+  }
+  free(Section_Names);
+  return shdr_named;
+}
+
+void free_shdr_named(Elf32_Shdr_named *shdr_named)
+{
+  // Free'd all inside allocation of the structure
+  for (int i = 0; i < shdr_named->shnum; i++)
+  {
+    free(shdr_named->names[i]);
+  }
+  free(shdr_named->names);
+  free(shdr_named->shdr);
+  free(shdr_named);
+}
+
+void run(Exec_options *exec_op, char *files[])
+{
+  FILE *filename = NULL;
+  Elf32_Ehdr ehdr; // File header informations structure
+
+  for (int i = 0; i < exec_op->nb_files; i++)
+  {
+    filename = fopen(files[i], "rb"); // Opening the file for binary read
+    // Checking file openned
+    if (filename == NULL)
+    {
+      if (exec_op->nb_files == 1) // if only one file
+      {
+        printf("read-elf: Error: '%s': No such file\n", files[0]);
+        free(files[i]);
+        free(files);
+        exit(EXIT_FAILURE);
+      }
+      else // if there are several files
+      {
+        printf("read-elf: Error: '%s': No such file\n", files[i]);
+      }
+    }
+    else
+    {
+      // if there are several files to read
+      if (exec_op->nb_files > 1)
+        printf("File: %s\n", files[i]);
+
+      (exec_op->verbose) ? fprintf(stderr, "\033[36mReading the file header\033[37m\n") : 0;
+      // READING HEADER
+      header_read(&ehdr, filename);
+
+      // Detection of big or little endian
+      if (ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
+      {
+        (exec_op->verbose) ? fprintf(stderr, "\033[36mFile is in big endian, switch to little endian\033[37m\n") : 0;
+        exec_op->big_endian_file = true;
+        header_endianess(&ehdr);
+      }
+
+      // Display informations
+      if (exec_op->header)
+      {
+        print_entete(&ehdr); // Print file header
+      }
+
+      if (exec_op->section_headers && ehdr.e_shnum > 0)
+      {
+        if (!exec_op->header)
+        {
+          printf("There are %d section header, starting at offset 0x%x:\n", ehdr.e_shnum, ehdr.e_shoff);
+        }
+
+        (exec_op->verbose) ? fprintf(stderr, "\033[36mReading section headers\033[37m\n") : 0;
+
+        //
+        Elf32_Shdr_named *shdr_named = section_headers_read(exec_op, filename, &ehdr);
+
+        // Display section headers
+        print_section_headers(shdr_named);
+
+        free_shdr_named(shdr_named);
+      }
+      else if (exec_op->section_headers && ehdr.e_shnum == 0)
+      {
+        printf("There is no section in this file !\n");
+      }
+
+      // Closing file
+      fclose(filename);
+
+      // Conditions for displaying multiple files
+      if (exec_op->nb_files > 1)
+        printf("\n");
+
+      (exec_op->verbose) ? fprintf(stderr, "\033[36mEnd of file reading\033[37m\n\n") : 0;
+    }
+    free(files[i]);
+  }
+}
+
+void display_settings(Exec_options *exec_op, char *files[])
+{
+  fprintf(stderr, "nb files: %d\n", exec_op->nb_files);
+  for (int i = 0; i < exec_op->nb_files; i++)
+  {
+    fprintf(stderr, "files %d: %s\n", i, files[i]);
+  }
+}
+
+int main(int argc, char *argv[])
+{
+  Exec_options exec_op;
+
+  // Checking the minimum number of arguments
+  if (argc < 2)
+    print_usage(stderr, EXIT_FAILURE, argv[0]);
+
+  // Input detections
+  char **files = init_execution(argc, argv, &exec_op);
+  (exec_op.verbose) ? fprintf(stderr, "\033[36mInitialisation succeed !\033[37m\n") : 0;
+  (exec_op.verbose) ? display_settings(&exec_op, files) : 0;
+
+  // Execution
+  run(&exec_op, files);
+
+  free(files);
   return 0;
 }

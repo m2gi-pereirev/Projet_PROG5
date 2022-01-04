@@ -2,7 +2,7 @@
 
 void section_print_number(int num)
 {
-    if(num < 10)
+    if (num < 10)
         printf("  [ %d]\t", num);
     else
         printf("  [%d]\t", num);
@@ -11,13 +11,27 @@ void section_print_number(int num)
 void section_print_display_header()
 {
     printf("\nSection Headers:\n");
-    printf("  [Nr]\tName\t\tType\t\tAddr\toff\tSize\tES Flg\tLk Inf Al\n");
+    printf("  [Nr] Name               Type            Addr     Off    Size   ES Flg Lk Inf Al\n");
 }
 
-void section_print_name(Elf32_Word name)
+void section_print_name(char *name)
 {
-    printf("%d\t", name);
-    // printf("%c\n", name);
+    if (!name)
+    {
+        printf("                  ");
+    }
+    else if (strlen(name) > 17)
+    {
+        for (int i = 0; i < 12; i++)
+            printf("%c", name[i]);
+        printf("[...] ");
+    }
+    else
+    {
+        printf("%s", name);
+        for (int i = 0; i < 18 - strlen(name); i++)
+            printf(" ");
+    }
 }
 
 void section_print_type(Elf32_Word type)
@@ -25,215 +39,237 @@ void section_print_type(Elf32_Word type)
     switch (type)
     {
     case SHT_NULL:
-        printf("NULL\t\t");
+        printf("NULL            ");
         break;
     case SHT_PROGBITS:
-        printf("PROGBITS\t\t");
+        printf("PROGBITS        ");
         break;
     case SHT_SYMTAB:
-        printf("SYMTAB\t\t");
+        printf("SYMTAB          ");
         break;
     case SHT_STRTAB:
-        printf("STRTAB\t\t");
+        printf("STRTAB          ");
         break;
     case SHT_RELA:
-        printf("RELA\t\t");
+        printf("RELA            ");
         break;
     case SHT_HASH:
-        printf("HASH\t\t");
+        printf("HASH            ");
         break;
     case SHT_DYNAMIC:
-        printf("DYNAMIC\t\t");
+        printf("DYNAMIC         ");
         break;
     case SHT_NOTE:
-        printf("NOTE\t\t");
+        printf("NOTE            ");
         break;
     case SHT_NOBITS:
-        printf("NOBITS");
+        printf("NOBITS          ");
         break;
     case SHT_REL:
-        printf("REL\t");
+        printf("REL             ");
         break;
     case SHT_SHLIB:
-        printf("SHLIB\t\t");
+        printf("SHLIB           ");
         break;
     case SHT_DYNSYM:
-        printf("DYNSYM\t\t");
+        printf("DYNSYM          ");
         break;
     case SHT_INIT_ARRAY:
-        printf("INIT ARRAY\t");
+        printf("INIT ARRAY      ");
         break;
     case SHT_FINI_ARRAY:
-        printf("FINI_ARRAY\t");
+        printf("FINI_ARRAY      ");
         break;
     case SHT_PREINIT_ARRAY:
-        printf("PREINIT_ARRAY\t");
+        printf("PREINIT_ARRAY   ");
         break;
     case SHT_GROUP:
-        printf("GROUP\t\t");
+        printf("GROUP           ");
         break;
     case SHT_SYMTAB_SHNDX:
-        printf("SYMTAB_SHNDX");
+        printf("SYMTAB_SHNDX    ");
         break;
     case SHT_NUM:
-        printf("NUM\t\t");
+        printf("NUM             ");
         break;
     case SHT_LOOS:
-        printf("LOOS\t\t");
+        printf("LOOS            ");
         break;
     case SHT_GNU_ATTRIBUTES:
-        printf("GNU ATTRIBUTE\t");
+        printf("GNU ATTRIBUTE   ");
         break;
     case SHT_GNU_HASH:
-        printf("GNU HASH\t\t");
+        printf("GNU HASH        ");
         break;
     case SHT_GNU_LIBLIST:
-        printf("GNU LISTLIB\t");
+        printf("GNU LISTLIB     ");
         break;
     case SHT_CHECKSUM:
-        printf("CHECKSUM\t\t");
+        printf("CHECKSUM        ");
         break;
     case SHT_LOSUNW:
-        printf("LOSUW\t\t");
+        printf("LOSUW           ");
         break;
     case SHT_SUNW_COMDAT:
-        printf("SUNW COMDAT\t\t");
+        printf("SUNW COMDAT     ");
         break;
     case SHT_SUNW_syminfo:
-        printf("SUNW syminfo\t");
+        printf("SUNW syminfo    ");
         break;
     case SHT_GNU_verdef:
-        printf("FNU verdef\t");
+        printf("FNU verdef      ");
         break;
     case SHT_GNU_verneed:
-        printf("GNU verneed\t");
+        printf("GNU verneed     ");
         break;
     case SHT_GNU_versym:
-        printf("GNU versym\t");
+        printf("GNU versym      ");
         break;
     case SHT_LOPROC:
-        printf("LOPROC\t\t");
+        printf("LOPROC          ");
         break;
     case SHT_HIPROC:
-        printf("HIPROC\t\t");
+        printf("HIPROC          ");
         break;
     case SHT_LOUSER:
-        printf("LOUSER\t\t");
+        printf("LOUSER          ");
         break;
     case SHT_HIUSER:
-        printf("HIUSER\t\t");
+        printf("HIUSER          ");
         break;
-
     default:
+        printf("NONE            ");
         break;
     }
 }
 
 void section_print_flags(Elf32_Word flags)
 {
-    switch (flags)
+    printf("    ");
+/*     switch (flags)
     {
     case SHF_WRITE:
-        printf("WRITE");
+        printf("  W  ");
         break;
     case SHF_ALLOC:
-        printf("ALLOC\t");
+        printf("  A  ");
         break;
     case SHF_EXECINSTR:
-        printf("INSTR\t");
+        printf("  X  ");
         break;
     case SHF_MERGE:
-        printf("MERGE\t");
+        printf("  M  ");
         break;
     case SHF_STRINGS:
-        printf("STR\t");
+        printf("  S  ");
         break;
     case SHF_INFO_LINK:
-        printf("IFLK\t");
+        printf("  I  ");
         break;
     case SHF_LINK_ORDER:
-        printf("LKO\t");
-        break;
-    case SHF_OS_NONCONFORMING:
-        printf("N_OS\t");
-        break;
-    case SHF_GROUP:
-        printf("GRP\t");
-        break;
-    case SHF_TLS:
-        printf("TLS\t");
-        break;
-    case SHF_COMPRESSED:
-        printf("COMP\t");
-        break;
-    case SHF_MASKOS:
-        printf("MSKOS\t");
-        break;
-    case SHF_MASKPROC:
-        printf("MSKPROC\t");
-        break;
-    case SHF_GNU_RETAIN:
-        printf("RETAIN\t");
+        printf("  L  ");
         break;
     case SHF_ORDERED:
-        printf("ORD\t");
+        printf("  O  ");
+        break;
+    case SHF_GROUP:
+        printf("  G  ");
+        break;
+    case SHF_TLS:
+        printf("  T  ");
+        break;
+    case SHF_COMPRESSED:
+        printf("  C  ");
+        break;
+    case SHF_MASKOS:
+        printf("  o  ");
         break;
     case SHF_EXCLUDE:
-        printf("EXCLD\t");
+        printf("  E  ");
+        break;
+    case SHF_MASKPROC:
+        printf("  p  ");
         break;
 
     default:
+        printf("     ");
         break;
-    }
+    } */
 }
 
 void section_print_decalage(Elf32_Off decalage)
 {
-    printf("%06" PRIX32 "\t", decalage);
+    printf("%06" PRIx32 " ", decalage);
 }
 
 void section_print_address(Elf32_Addr address)
 {
-    printf("%06" PRIX32 "\t", address);
+    printf("%08" PRIx32 " ", address);
 }
 
 void section_print_size(Elf32_Word size)
 {
-    printf("%06" PRIX32 "\t", size);
+    printf("%06" PRIx32 " ", size);
 }
 
 void section_print_entrysize(Elf32_Word entrysize)
 {
-    printf("%02" PRIX32 "\t", entrysize);
+    printf("%02" PRIx32 " ", entrysize);
 }
 
 void section_print_link(Elf32_Word link)
 {
-    printf("%hx", link);
+    if (link < 10)
+        printf(" %d  ", link);
+    else
+        printf("%d  ", link);
 }
 
 void section_print_info(Elf32_Word info)
 {
-    printf("%hx", info);
+    if (info < 10)
+        printf(" %d ", info);
+    else
+        printf("%d ", info);
 }
 
 void section_print_alignement(Elf32_Word align)
 {
-    printf("%hx", align);
+    if (align < 10)
+        printf(" %d ", align);
+    else
+        printf("%d ", align);
 }
 
-void affichage_section(Elf32_Shdr *shdr, int shnum)
+void section_print_flag_key_info()
 {
-    section_print_number(shnum);
-    section_print_name(shdr->sh_name);
-    section_print_type(shdr->sh_type);
-    section_print_address(shdr->sh_addr);
-    section_print_decalage(shdr->sh_offset);
-    section_print_size(shdr->sh_size);
-    section_print_entrysize(shdr->sh_entsize);
-    section_print_flags(shdr->sh_flags);
-    section_print_link(shdr->sh_link);
-    section_print_info(shdr->sh_info);
-    section_print_alignement(shdr->sh_addralign);
-    printf("\n");
+    printf("Flag key:\n");
+    printf("  W (write), A (allocation), X (execution), M (merge), S (strings), I (info),\n");
+    printf("  L (order of the links), O (additional processing by the OS required), G (group),\n");
+    printf("  T (TLS), C (compressed), x (unknown), o (OS specific), E (excluded),\n");
+    printf("  y (purecode), p (processor specific)\n");
+}
+
+void print_section_headers(Elf32_Shdr_named *shdr_named)
+{
+    // INIT DISPLAY
+    section_print_display_header();
+
+    // DISPLAY
+    for (int i = 0; i < shdr_named->shnum; i++)
+    {
+        section_print_number(i);
+        section_print_name(shdr_named->names[i]);
+        section_print_type(shdr_named->shdr[i].sh_type);
+        section_print_address(shdr_named->shdr[i].sh_addr);
+        section_print_decalage(shdr_named->shdr[i].sh_offset);
+        section_print_size(shdr_named->shdr[i].sh_size);
+        section_print_entrysize(shdr_named->shdr[i].sh_entsize);
+        section_print_flags(shdr_named->shdr[i].sh_flags);
+        section_print_link(shdr_named->shdr[i].sh_link);
+        section_print_info(shdr_named->shdr[i].sh_info);
+        section_print_alignement(shdr_named->shdr[i].sh_addralign);
+        printf("\n");
+    }
+    section_print_flag_key_info();
 }
