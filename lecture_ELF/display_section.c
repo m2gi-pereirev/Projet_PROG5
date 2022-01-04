@@ -145,56 +145,89 @@ void section_print_type(Elf32_Word type)
 
 void section_print_flags(Elf32_Word flags)
 {
-    printf("    ");
-/*     switch (flags)
+    char flags_out[] = "    ";
+    int size = 3;
+    if ((flags & SHF_MASKPROC) && size > 0)
     {
-    case SHF_WRITE:
-        printf("  W  ");
-        break;
-    case SHF_ALLOC:
-        printf("  A  ");
-        break;
-    case SHF_EXECINSTR:
-        printf("  X  ");
-        break;
-    case SHF_MERGE:
-        printf("  M  ");
-        break;
-    case SHF_STRINGS:
-        printf("  S  ");
-        break;
-    case SHF_INFO_LINK:
-        printf("  I  ");
-        break;
-    case SHF_LINK_ORDER:
-        printf("  L  ");
-        break;
-    case SHF_ORDERED:
-        printf("  O  ");
-        break;
-    case SHF_GROUP:
-        printf("  G  ");
-        break;
-    case SHF_TLS:
-        printf("  T  ");
-        break;
-    case SHF_COMPRESSED:
-        printf("  C  ");
-        break;
-    case SHF_MASKOS:
-        printf("  o  ");
-        break;
-    case SHF_EXCLUDE:
-        printf("  E  ");
-        break;
-    case SHF_MASKPROC:
-        printf("  p  ");
-        break;
-
-    default:
-        printf("     ");
-        break;
-    } */
+        flags_out[size] = 'p';
+        size--;
+    }
+    if ((flags & SHF_GNU_RETAIN) && size > 0)
+    {
+        flags_out[size] = 'y';
+        size--;
+    }
+    if ((flags & SHF_EXCLUDE) && size > 0)
+    {
+        flags_out[size] = 'E';
+        size--;
+    }
+    if ((flags & SHF_MASKOS) && size > 0)
+    {
+        flags_out[size] = 'o';
+        size--;
+    }
+    if ((flags & SHF_ORDERED) && size > 0)
+    {
+        flags_out[size] = 'x';
+        size--;
+    }
+    if ((flags & SHF_COMPRESSED) && size > 0)
+    {
+        flags_out[size] = 'C';
+        size--;
+    }
+    if ((flags & SHF_TLS) && size > 0)
+    {
+        flags_out[size] = 'T';
+        size--;
+    }
+    if ((flags & SHF_GROUP) && size > 0)
+    {
+        flags_out[size] = 'G';
+        size--;
+    }
+    if ((flags & SHF_OS_NONCONFORMING) && size > 0)
+    {
+        flags_out[size] = 'O';
+        size--;
+    }
+    if ((flags & SHF_LINK_ORDER) && size > 0)
+    {
+        flags_out[size] = 'L';
+        size--;
+    }
+    if ((flags & SHF_INFO_LINK) && size > 0)
+    {
+        flags_out[size] = 'I';
+        size--;
+    }
+    if ((flags & SHF_STRINGS) && size > 0)
+    {
+        flags_out[size] = 'S';
+        size--;
+    }
+    if ((flags & SHF_MERGE) && size > 0)
+    {
+        flags_out[size] = 'M';
+        size--;
+    }
+    if ((flags & SHF_EXECINSTR) && size > 0)
+    {
+        flags_out[size] = 'X';
+        size--;
+    }
+    if ((flags & SHF_ALLOC) && size > 0)
+    {
+        flags_out[size] = 'A';
+        size--;
+    }
+    if ((flags & SHF_WRITE) && size > 0)
+    {
+        flags_out[size] = 'W';
+        size--;
+    }
+    printf("%s ", flags_out);
 }
 
 void section_print_decalage(Elf32_Off decalage)

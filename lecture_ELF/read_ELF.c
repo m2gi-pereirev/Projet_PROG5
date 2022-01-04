@@ -3,12 +3,11 @@
 char **options_read(int argc, char **argv, Exec_options *exec_op)
 {
   char **files = NULL;
-  const char *const short_options = "vhaHS";
+  const char *const short_options = "haHS";
   // Lecture des arguments
   while (1)
   {
     static struct option long_options[] = {
-        {"verbose", no_argument, 0, 'v'},
         {"help", no_argument, 0, 'h'},
         {"all", no_argument, 0, 'a'},
         {"file-header", no_argument, 0, 'H'},
@@ -24,10 +23,6 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
 
     switch (c)
     {
-    case 'v': // verbose activated
-      exec_op->verbose = true;
-      break;
-
     case 'h': // help display
       free(files);
       print_usage(stdout, EXIT_SUCCESS, argv[0]);
@@ -57,6 +52,10 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
+  else if (!exec_op->header && !exec_op->section_headers)
+  {
+    print_usage(stderr, EXIT_FAILURE, argv[0]);
+  }
   else if (optind == argc - 1) // If there is only one file given
   {
     exec_op->nb_files = 1;
@@ -81,7 +80,6 @@ char **init_execution(int argc, char **argv, Exec_options *exec_op)
 {
   exec_op->header = false;
   exec_op->section_headers = false;
-  exec_op->verbose = false;
   exec_op->big_endian_file = false;
 
   return options_read(argc, argv, exec_op);
@@ -181,14 +179,12 @@ void run(Exec_options *exec_op, char *files[])
       if (exec_op->nb_files > 1)
         printf("File: %s\n", files[i]);
 
-      (exec_op->verbose) ? fprintf(stderr, "\033[36mReading the file header\033[37m\n") : 0;
       // READING HEADER
       header_read(&ehdr, filename);
 
       // Detection of big or little endian
       if (ehdr.e_ident[EI_DATA] == ELFDATA2MSB)
       {
-        (exec_op->verbose) ? fprintf(stderr, "\033[36mFile is in big endian, switch to little endian\033[37m\n") : 0;
         exec_op->big_endian_file = true;
         header_endianess(&ehdr);
       }
@@ -206,9 +202,7 @@ void run(Exec_options *exec_op, char *files[])
           printf("There are %d section header, starting at offset 0x%x:\n", ehdr.e_shnum, ehdr.e_shoff);
         }
 
-        (exec_op->verbose) ? fprintf(stderr, "\033[36mReading section headers\033[37m\n") : 0;
-
-        //
+        // Reading section headers
         Elf32_Shdr_named *shdr_named = section_headers_read(exec_op, filename, &ehdr);
 
         // Display section headers
@@ -228,18 +222,8 @@ void run(Exec_options *exec_op, char *files[])
       if (exec_op->nb_files > 1)
         printf("\n");
 
-      (exec_op->verbose) ? fprintf(stderr, "\033[36mEnd of file reading\033[37m\n\n") : 0;
     }
     free(files[i]);
-  }
-}
-
-void display_settings(Exec_options *exec_op, char *files[])
-{
-  fprintf(stderr, "nb files: %d\n", exec_op->nb_files);
-  for (int i = 0; i < exec_op->nb_files; i++)
-  {
-    fprintf(stderr, "files %d: %s\n", i, files[i]);
   }
 }
 
@@ -253,8 +237,6 @@ int main(int argc, char *argv[])
 
   // Input detections
   char **files = init_execution(argc, argv, &exec_op);
-  (exec_op.verbose) ? fprintf(stderr, "\033[36mInitialisation succeed !\033[37m\n") : 0;
-  (exec_op.verbose) ? display_settings(&exec_op, files) : 0;
 
   // Execution
   run(&exec_op, files);
