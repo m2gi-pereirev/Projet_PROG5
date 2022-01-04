@@ -33,15 +33,15 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
       print_usage(stdout, EXIT_SUCCESS, argv[0]);
 
     case 'a': // all informations display
+      exec_op->header = true;
+      exec_op->section_headers = true;
       break;
 
     case 'H': // Header display
-      exec_op->all = false;
       exec_op->header = true;
       break;
 
     case 'S': // Section headers display
-      exec_op->all = false;
       exec_op->section_headers = true;
       break;
 
@@ -79,7 +79,6 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
 
 char **init_execution(int argc, char **argv, Exec_options *exec_op)
 {
-  exec_op->all = true;
   exec_op->header = false;
   exec_op->section_headers = false;
   exec_op->verbose = false;
@@ -93,25 +92,70 @@ void header_read(Elf32_Ehdr *ehdr, FILE *filename)
   fread(ehdr, 1, sizeof(Elf32_Ehdr), filename);
 }
 
-void section_headers_read(Elf32_Shdr *shdr)
+Elf32_Shdr_named *section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr)
 {
-  // shdr->sh_name = octetread(sizeof(shdr->sh_name));
-  // shdr->sh_type = octetread(sizeof(shdr->sh_type));
-  // shdr->sh_flags = octetread(sizeof(shdr->sh_flags));
-  // shdr->sh_addr = octetread(sizeof(shdr->sh_addr));
-  // shdr->sh_offset = octetread(sizeof(shdr->sh_offset));
-  // shdr->sh_size = octetread(sizeof(shdr->sh_size));
-  // shdr->sh_link = octetread(sizeof(shdr->sh_link));
-  // shdr->sh_info = octetread(sizeof(shdr->sh_info));
-  // shdr->sh_addralign = octetread(sizeof(shdr->sh_addralign));
-  // shdr->sh_entsize = octetread(sizeof(shdr->sh_entsize));
+  Elf32_Shdr_named *shdr_named = calloc(1, sizeof(Elf32_Shdr_named));
+  shdr_named->shnum = ehdr->e_shnum;
+  int last_entry = ehdr->e_shnum - 1;
+  char *Section_Names;
+
+  // Allocation
+  shdr_named->shdr = calloc(shdr_named->shnum, sizeof(Elf32_Shdr));
+  shdr_named->names = calloc(shdr_named->shnum, sizeof(char *));
+
+  // Reading of the last entry
+  fseek(filename, ehdr->e_shoff + last_entry * sizeof(Elf32_Shdr), SEEK_SET);
+  fread(&shdr_named->shdr[last_entry], 1, sizeof(Elf32_Shdr), filename);
+
+  // endianess
+  if (exec_op->big_endian_file)
+    section_headers_endianess(&shdr_named->shdr[last_entry]);
+
+  // Allocation
+  Section_Names = calloc(1, shdr_named->shdr[last_entry].sh_size);
+
+  // Recovering the names of the section headers
+  fseek(filename, shdr_named->shdr[last_entry].sh_offset, SEEK_SET);
+  fread(Section_Names, 1, shdr_named->shdr[last_entry].sh_size, filename);
+
+  // Reading section headers
+  for (int i = 0; i < shdr_named->shnum; i++)
+  {
+    fseek(filename, ehdr->e_shoff + i * sizeof(Elf32_Shdr), SEEK_SET);
+    fread(&shdr_named->shdr[i], 1, sizeof(Elf32_Shdr), filename);
+
+    if (exec_op->big_endian_file)
+      section_headers_endianess(&shdr_named->shdr[i]);
+
+    // Association of the name with the header
+    if (shdr_named->shdr[i].sh_name)
+    {
+      char *name = "";
+      name = Section_Names + shdr_named->shdr[i].sh_name;
+      shdr_named->names[i] = calloc(strlen(name) + 1, sizeof(char));
+      strcpy(shdr_named->names[i], name);
+    }
+  }
+  free(Section_Names);
+  return shdr_named;
+}
+
+void free_shdr_named(Elf32_Shdr_named *shdr_named)
+{
+  // Free'd all inside allocation of the structure
+  for (int i = 0; i < shdr_named->shnum; i++)
+  {
+    free(shdr_named->names[i]);
+  }
+  free(shdr_named->names);
+  free(shdr_named->shdr);
+  free(shdr_named);
 }
 
 void run(Exec_options *exec_op, char *files[])
 {
   FILE *filename = NULL;
   Elf32_Ehdr ehdr; // File header informations structure
-  Elf32_Shdr shdr; // Section header informations structure
 
   for (int i = 0; i < exec_op->nb_files; i++)
   {
@@ -149,43 +193,32 @@ void run(Exec_options *exec_op, char *files[])
         header_endianess(&ehdr);
       }
 
-      // Display all informations
-      if (exec_op->all) // display all of the elf file
+      // Display informations
+      if (exec_op->header)
       {
-        print_entete(&ehdr); // display header's file
-
-        // SECTION HEADERS
-
-        (exec_op->verbose) ? fprintf(stderr, "\033[36mReading section header's\n") : 0;
-
-        if (ehdr.e_shnum > 0)
-        {
-          section_headers_read(&shdr);  // Reading section headers
-          if (exec_op->big_endian_file) // if file is in big endian, transform to little endian
-            section_headers_endianess(&shdr);
-          // print_section();
-        }
-        // if no sections
-        else if (ehdr.e_shnum == 0)
-          printf("There is no section in this file !\n");
+        print_entete(&ehdr); // Print file header
       }
 
-      // Display choosen informations selected by users
-      if (!exec_op->all)
+      if (exec_op->section_headers && ehdr.e_shnum > 0)
       {
-        if (exec_op->header)
+        if (!exec_op->header)
         {
-          print_entete(&ehdr); // Print file header
+          printf("There are %d section header, starting at offset 0x%x:\n", ehdr.e_shnum, ehdr.e_shoff);
         }
 
-        if (exec_op->section_headers && ehdr.e_shnum > 0)
-        {
-          // print_section();
-        }
-        else if (exec_op->section_headers && ehdr.e_shnum == 0)
-        {
-          printf("There is no section in this file !\n");
-        }
+        (exec_op->verbose) ? fprintf(stderr, "\033[36mReading section headers\033[37m\n") : 0;
+
+        //
+        Elf32_Shdr_named *shdr_named = section_headers_read(exec_op, filename, &ehdr);
+
+        // Display section headers
+        print_section_headers(shdr_named);
+
+        free_shdr_named(shdr_named);
+      }
+      else if (exec_op->section_headers && ehdr.e_shnum == 0)
+      {
+        printf("There is no section in this file !\n");
       }
 
       // Closing file
@@ -196,7 +229,6 @@ void run(Exec_options *exec_op, char *files[])
         printf("\n");
 
       (exec_op->verbose) ? fprintf(stderr, "\033[36mEnd of file reading\033[37m\n\n") : 0;
-
     }
     free(files[i]);
   }
@@ -227,20 +259,6 @@ int main(int argc, char *argv[])
   // Execution
   run(&exec_op, files);
 
-  // if (ehdr->e_shnum > 0)
-  // {
-  //   printf("\n");
-  //   printf("There are %d section header, starting at offset 0x%x", ehdr->e_shnum, ehdr->e_shoff);
-
-  //   section_print_display_header();
-  //   section_headers_start(ehdr->e_shoff, ehdr->e_shstrndx);
-  //   for (int i = 0; i < ehdr->e_shnum; i++)
-  //   {
-  //     section_read(shdr);
-  //     print_section(shdr, i);
-  //   }
-  //   section_print_flag_key_info();
-  // }
   free(files);
   return 0;
 }
