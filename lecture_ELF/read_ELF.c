@@ -41,7 +41,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
       exec_op->section_headers = true;
       break;
 
-    case 'x': // display a section
+    case 'x': ; // display a section
       int tmp;
       if (sscanf(optarg, "%d", &tmp) == 1) // it's integer
       {
@@ -173,7 +173,7 @@ void free_shdr_named(Elf32_Shdr_named *shdr_named)
   FILE *filename = NULL;
   Elf32_Ehdr ehdr;             // File header informations structure
   Elf32_Shdr_named shdr_named; // Section headers with names informations structure
-  char *section_content = NULL;
+  uint16_t *section_content = NULL;
 
   for (int i = 0; i < exec_op->nb_files; i++)
   {
@@ -264,9 +264,24 @@ void free_shdr_named(Elf32_Shdr_named *shdr_named)
             fseek(filename, shdr_named.shdr[idx].sh_offset, SEEK_SET);
             fread(section_content, 1, shdr_named.shdr[idx].sh_size, filename);
 
+            // endianess
+          if (exec_op->big_endian_file) 
+            section_content_endianess(section_content, &shdr_named.shdr[idx]);
+
+
             if (section_content) //  Display section content
             {
               printf("Hex dump of section '%s':\n", shdr_named.names[idx]);
+              print_section_hexa(&shdr_named, section_content , idx);
+              
+              //Display section header content in text format
+              char choice[4];
+              printf("Do you want to display the header of this section ? (Yes / No)\n");
+              fflush(stdout);
+              fgets(choice,sizeof(choice),stdin);
+              if(strcmp(choice,"Yes") == 0) 
+                print_section_text(&shdr_named, idx);
+
             }
             free(section_content);
           }
