@@ -6,10 +6,25 @@
 #include <elf.h>
 
 /**
- * @brief
+ * @brief Print the header of the display
  *
- * @param
+ * @param name of the section
  */
-void print_section();
+void print_section_content_header(char *name);
+
+/**
+ * @brief Print Section content
+ *
+ * @param section_content Content of the section
+ * @param size Size of the section in bytes
+ */
+void print_section(char *section_content, int size);
+
+    /**
+     * @brief
+     *
+     * @param
+     */
+    void print_section_content();
 
 #endif

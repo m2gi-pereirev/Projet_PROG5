@@ -33,6 +33,6 @@ void section_headers_endianess(Elf32_Shdr *shdr)
 
 void section_content_endianess(char *content, Elf32_Shdr *shdr)
 {
-  for (int i = 0; i < shdr->sh_size; i++)
+  for (int i = 0; i < shdr->sh_size; i += 2 )
     content[i] = __bswap_16(content[i]);
 }
