@@ -44,6 +44,6 @@ void header_read(Elf32_Ehdr *ehdr, FILE *filename);
  * @param ehdr
  * @return Elf32_Shdr*
  */
-Elf32_Shdr_named *section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr);
+void section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named);
 
 #endif

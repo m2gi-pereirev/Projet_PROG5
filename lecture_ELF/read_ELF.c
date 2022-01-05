@@ -45,12 +45,12 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
       int tmp;
       if (sscanf(optarg, "%d", &tmp) == 1) // it's integer
       {
-        hexdump->is_string = true;
+        hexdump->is_string = false;
         hexdump->section_number = atoi(optarg);
       }
       else // it's string
       {
-        hexdump->is_string = false;
+        hexdump->is_string = true;
         hexdump->section_name = calloc(strlen(optarg) + 1, sizeof(char));
         strcpy(hexdump->section_name, optarg);
       }
@@ -110,9 +110,9 @@ void header_read(Elf32_Ehdr *ehdr, FILE *filename)
   fread(ehdr, 1, sizeof(Elf32_Ehdr), filename);
 }
 
-Elf32_Shdr_named *section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr)
+void section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named)
 {
-  Elf32_Shdr_named *shdr_named = calloc(1, sizeof(Elf32_Shdr_named));
+  // Elf32_Shdr_named *shdr_named = calloc(1, sizeof(Elf32_Shdr_named));
   shdr_named->shnum = ehdr->e_shnum;
   int last_entry = ehdr->e_shnum - 1;
   char *Section_Names;
@@ -155,7 +155,6 @@ Elf32_Shdr_named *section_headers_read(Exec_options *exec_op, FILE *filename, El
     }
   }
   free(Section_Names);
-  return shdr_named;
 }
 
 void free_shdr_named(Elf32_Shdr_named *shdr_named)
@@ -167,19 +166,19 @@ void free_shdr_named(Elf32_Shdr_named *shdr_named)
   }
   free(shdr_named->names);
   free(shdr_named->shdr);
-  free(shdr_named);
 }
 
-void run(Exec_options *exec_op, char *files[])
+    void run(Exec_options *exec_op, char *files[], hexdump_option hexdump)
 {
   FILE *filename = NULL;
-  Elf32_Ehdr ehdr; // File header informations structure
+  Elf32_Ehdr ehdr;             // File header informations structure
+  Elf32_Shdr_named shdr_named; // Section headers with names informations structure
+  char *section_content = NULL;
 
   for (int i = 0; i < exec_op->nb_files; i++)
   {
     filename = fopen(files[i], "rb"); // Opening the file for binary read
-    // Checking file openned
-    if (filename == NULL)
+    if (filename == NULL)             // Checking file not openned
     {
       if (exec_op->nb_files == 1) // if only one file
       {
@@ -193,9 +192,9 @@ void run(Exec_options *exec_op, char *files[])
         printf("read-elf: Error: '%s': No such file\n", files[i]);
       }
     }
-    else
+    else // if file openned
     {
-      // if there are several files to read
+      // Display for several files
       if (exec_op->nb_files > 1)
         printf("File: %s\n", files[i]);
 
@@ -209,31 +208,98 @@ void run(Exec_options *exec_op, char *files[])
         header_endianess(&ehdr);
       }
 
-      // Display informations
+      // READING SECTION HEADERS
+      section_headers_read(exec_op, filename, &ehdr, &shdr_named);
+
+      // DISPLAY
+
+      // File header
       if (exec_op->header)
       {
-        print_entete(&ehdr); // Print file header
+        print_entete(&ehdr);
       }
 
+      // Section header
       if (exec_op->section_headers && ehdr.e_shnum > 0)
       {
+        // Informations if only section headers displayed
         if (!exec_op->header)
         {
           printf("There are %d section header, starting at offset 0x%x:\n", ehdr.e_shnum, ehdr.e_shoff);
         }
-
-        // Reading section headers
-        Elf32_Shdr_named *shdr_named = section_headers_read(exec_op, filename, &ehdr);
-
-        // Display section headers
-        print_section_headers(shdr_named);
-
-        free_shdr_named(shdr_named);
+        print_section_headers(&shdr_named);
       }
+      // If no section in the files
       else if (exec_op->section_headers && ehdr.e_shnum == 0)
       {
         printf("There is no section in this file !\n");
       }
+
+      // Section display
+      if (exec_op->hexdump && ehdr.e_shnum > 0)
+      {
+        int idx = 1;           // index of section, initialize to skip null section
+        if (hexdump.is_string) // if string is passed in argument
+        {
+          // Search for the header index
+          while (idx < shdr_named.shnum && strcmp(hexdump.section_name, shdr_named.names[idx]) != 0)
+            idx++;
+        }
+        else // if int is passed in argument
+        {
+          idx = hexdump.section_number;
+        }
+
+
+
+        // Reading section content
+        if (idx >= 0 && idx < shdr_named.shnum)
+        {
+          if (shdr_named.shdr[idx].sh_size > 0)
+          {
+            // Allocation
+            section_content = calloc(shdr_named.shdr[idx].sh_size, sizeof(char));
+
+            // Read section
+            fseek(filename, shdr_named.shdr[idx].sh_offset, SEEK_SET);
+            fread(section_content, 1, shdr_named.shdr[idx].sh_size, filename);
+
+            if (section_content) //  Display section content
+            {
+              printf("Hex dump of section '%s':\n", shdr_named.names[idx]);
+            }
+            free(section_content);
+          }
+          else // no content to display
+          {
+            if (shdr_named.names[idx])
+              printf("Section '%s' has no data to dump.\n", shdr_named.names[idx]);
+            else
+              printf("Section '' has no data to dump.\n");
+          }
+        }
+        else
+        {
+          // Section doesn't exist
+          if (idx >= shdr_named.shnum && hexdump.is_string)
+            printf("readelf: Warning: Section '%s' was not dump because it doesn't exist!\n", hexdump.section_name);
+          if (idx < 0)
+            printf("readelf: Warning: Section '%d' was not dump because it doesn't exist!\n", hexdump.section_number);
+          if ((idx >= shdr_named.shnum && !hexdump.is_string))
+            printf("readelf: Warning: Section %d was not dump because it doesn't exist!\n", hexdump.section_number);
+        }
+
+      }
+      // If no section to display
+      else if (exec_op->hexdump && ehdr.e_shnum == 0)
+      {
+        if (hexdump.is_string)
+          printf("readelf: Warning: Section '%s' was not dump because it doesn't exist!\n", hexdump.section_name);
+        else
+          printf("readelf: Warning: Section %d was not dump because it doesn't exist!\n", hexdump.section_number);
+      }
+
+      // END OF READING
 
       // Closing file
       fclose(filename);
@@ -241,8 +307,8 @@ void run(Exec_options *exec_op, char *files[])
       // Conditions for displaying multiple files
       if (exec_op->nb_files > 1)
         printf("\n");
-
     }
+    free_shdr_named(&shdr_named);
     free(files[i]);
   }
 }
@@ -260,9 +326,9 @@ int main(int argc, char *argv[])
   char **files = init_execution(argc, argv, &exec_op, &hexdump);
 
   // Execution
-  run(&exec_op, files);
+  run(&exec_op, files, hexdump);
 
-  if (!hexdump.is_string)
+  if (hexdump.is_string)
     free(hexdump.section_name);
   free(files);
   return 0;
