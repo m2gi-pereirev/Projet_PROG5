@@ -16,11 +16,12 @@
 
 typedef struct execution_options
 {
-  int nb_files; // nb_files passed in arguments
-  bool header; // display only the header file
+  int nb_files;         // nb_files passed in arguments
+  bool header;          // display only the header file
   bool section_headers; // display only section headers
+  bool hexdump;         // Display section content
+  bool rel_table;       // Display relocation table
   bool big_endian_file; // true if file is in big_endian
-  bool hexdump;
 } Exec_options;
 
 typedef struct hexdump_option
