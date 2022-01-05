@@ -18,4 +18,11 @@ void header_endianess(Elf32_Ehdr *ehdr);
  */
 void section_headers_endianess(Elf32_Shdr *shdr);
 
+/**
+ * @brief Allows to switch from big to small endian and vice versa for the symbols table
+ *
+ * @param sym Elf symbole table structure
+ */
+void symbole_endianess(Elf32_Sym *sym);
+
 #endif

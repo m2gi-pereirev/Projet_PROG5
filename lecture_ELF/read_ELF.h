@@ -16,20 +16,13 @@
 
 typedef struct execution_options
 {
-  int nb_files;         // nb_files passed in arguments
-  bool header;          // display only the header file
+  int nb_files; // nb_files passed in arguments
+  bool header; // display only the header file
   bool section_headers; // display only section headers
-  bool hexdump;         // Display section content
-  bool rel_table;       // Display relocation table
   bool big_endian_file; // true if file is in big_endian
+  bool symb;
 } Exec_options;
 
-typedef struct hexdump_option
-{
-  bool is_string;
-  int section_number;
-  char *section_name;
-} hexdump_option;
 
 /**
  * @brief Read the current file and fill the header's structure
@@ -46,5 +39,9 @@ void header_read(Elf32_Ehdr *ehdr, FILE *filename);
  * @return Elf32_Shdr*
  */
 void section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named);
+
+
+
+void symbole_table_elf (Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named, Elf32_Sym_named *sym_named);
 
 #endif
