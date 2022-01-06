@@ -37,6 +37,15 @@ typedef struct hexdump_option
 void header_read(Elf32_Ehdr *ehdr, FILE *filename);
 
 /**
+ * @brief return if ti's a ELF formated file
+ *
+ * @param ident 16 first bit of the file
+ * @result true if it's ELF formated file
+ * @result false if it's not ELF formated file
+ */
+bool is_ELF_header(unsigned char *ident);
+
+/**
  * @brief
  *
  * @param exec_op

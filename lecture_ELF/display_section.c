@@ -24,7 +24,7 @@ void print_section(char *section_content, int size)
     // Print by section of four hexadecimal values
     while (i < section && i < size)
     {
-      printf("%02x", section_content[i]);
+      printf("%02hhx", section_content[i]);
       text[len_text] = section_content[i];
       ++len_text;
       ++i;

@@ -92,13 +92,4 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr);
  */
 void print_entete(Elf32_Ehdr *ehdr);
 
-/**
- * @brief return if ti's a ELF formated file
- *
- * @param ident 16 first bit of the file
- * @result true if it's ELF formated file
- * @result false if it's not ELF formated file
- */
-bool is_ELF_header(unsigned char *ident);
-
 #endif
