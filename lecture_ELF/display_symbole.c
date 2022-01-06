@@ -146,10 +146,10 @@ void symbole_print_number(int i)
     }
 }
 
-void print_table_sym(Elf32_Sym_named *sym_named, int nb_entry)
+void print_table_sym(Elf32_Sym_named *sym_named)
 {
     // INIT DISPLAY
-    print_symb_tab_Sym_head(nb_entry);
+    print_symb_tab_Sym_head(sym_named->sym_num);
 
     // DISPLAY
     for (int i = 0; i < sym_named->sym_num; i++)
