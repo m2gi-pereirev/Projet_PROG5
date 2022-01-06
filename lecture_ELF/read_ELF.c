@@ -1,9 +1,9 @@
 #include "read_ELF.h"
 
-char **options_read(int argc, char **argv, Exec_options *exec_op)
+char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option *hexdump)
 {
   char **files = NULL;
-  const char *const short_options = "haHSs";
+  const char *const short_options = "haHSsx:";
   // Lecture des arguments
   while (1)
   {
@@ -15,6 +15,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
         {"sections", no_argument, 0, 'S'},
         {"syms", no_argument, 0, 's'},
         {"symbols", no_argument, 0, 's'},
+        {"hex-dump", required_argument, 0, 'x'},
         {0, 0, 0, 0}};
 
     int option_index = 0;
@@ -47,6 +48,22 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
       exec_op->symb = true;
       break;
 
+    case 'x':
+      int tmp;
+      if (sscanf(optarg, "%d", &tmp) == 1) // it's integer
+      {
+        hexdump->is_string = false;
+        hexdump->section_number = atoi(optarg);
+      }
+      else // it's string
+      {
+        hexdump->is_string = true;
+        hexdump->section_name = calloc(strlen(optarg) + 1, sizeof(char));
+        strcpy(hexdump->section_name, optarg);
+      }
+      exec_op->hexdump = true;
+      break;
+        
     case '?': // error usage
       print_usage(stderr, EXIT_FAILURE, argv[0]);
 
@@ -59,7 +76,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
-  else if (!exec_op->header && !exec_op->section_headers && !exec_op->symb)
+  else if (!exec_op->header && !exec_op->section_headers && !exec_op->symb && !exec_op->hexdump)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
@@ -83,14 +100,17 @@ char **options_read(int argc, char **argv, Exec_options *exec_op)
   return files;
 }
 
-char **init_execution(int argc, char **argv, Exec_options *exec_op)
+char **init_execution(int argc, char **argv, Exec_options *exec_op, hexdump_option *hexdump)
 {
   exec_op->header = false;
   exec_op->section_headers = false;
   exec_op->big_endian_file = false;
   exec_op->symb = false;
+  exec_op->hexdump = true;
+  
+  hexdump->is_string = false;
 
-  return options_read(argc, argv, exec_op);
+  return options_read(argc, argv, exec_op, hexdump);
 }
 
 void header_read(Elf32_Ehdr *ehdr, FILE *filename)
@@ -220,8 +240,9 @@ void free_sym_named(Elf32_Sym_named *sym_named)
 void run(Exec_options *exec_op, char *files[])
 {
   FILE *filename = NULL;
-  Elf32_Ehdr ehdr; // File header informations structure
-  Elf32_Shdr_named shdr_named;
+  Elf32_Ehdr ehdr;             // File header informations structure
+  Elf32_Shdr_named shdr_named; // Section headers with names informations structure
+  char *section_content = NULL
   Elf32_Sym_named sym_named;
 
   for (int i = 0; i < exec_op->nb_files; i++)
@@ -277,16 +298,83 @@ void run(Exec_options *exec_op, char *files[])
         // Display section headers
         print_section_headers(&shdr_named);
       }
+      // If no section in the files
       else if (exec_op->section_headers && ehdr.e_shnum == 0)
       {
         printf("There is no section in this file !\n");
       }
 
+      // Section display
+      if (exec_op->hexdump && ehdr.e_shnum > 0)
+      {
+        int idx = 1;           // index of section, initialize to skip null section
+        if (hexdump.is_string) // if string is passed in argument
+        {
+          // Search for the header index
+          while (idx < shdr_named.shnum && strcmp(hexdump.section_name, shdr_named.names[idx]) != 0)
+            idx++;
+        }
+        else // if int is passed in argument
+        {
+          idx = hexdump.section_number;
+        }
+
+
+
+        // Reading section content
+        if (idx >= 0 && idx < shdr_named.shnum)
+        {
+          if (shdr_named.shdr[idx].sh_size > 0)
+          {
+            // Allocation
+            section_content = calloc(shdr_named.shdr[idx].sh_size, sizeof(char));
+
+            // Read section
+            fseek(filename, shdr_named.shdr[idx].sh_offset, SEEK_SET);
+            fread(section_content, 1, shdr_named.shdr[idx].sh_size, filename);
+
+            if (section_content) //  Display section content
+            {
+              printf("Hex dump of section '%s':\n", shdr_named.names[idx]);
+            }
+            free(section_content);
+          }
+          else // no content to display
+          {
+            if (shdr_named.names[idx])
+              printf("Section '%s' has no data to dump.\n", shdr_named.names[idx]);
+            else
+              printf("Section '' has no data to dump.\n");
+          }
+        }
+        else
+        {
+          // Section doesn't exist
+          if (idx >= shdr_named.shnum && hexdump.is_string)
+            printf("readelf: Warning: Section '%s' was not dump because it doesn't exist!\n", hexdump.section_name);
+          if (idx < 0)
+            printf("readelf: Warning: Section '%d' was not dump because it doesn't exist!\n", hexdump.section_number);
+          if ((idx >= shdr_named.shnum && !hexdump.is_string))
+            printf("readelf: Warning: Section %d was not dump because it doesn't exist!\n", hexdump.section_number);
+        }
+
+      }
+      // If no section to display
+      else if (exec_op->hexdump && ehdr.e_shnum == 0)
+      {
+        if (hexdump.is_string)
+          printf("readelf: Warning: Section '%s' was not dump because it doesn't exist!\n", hexdump.section_name);
+        else
+          printf("readelf: Warning: Section %d was not dump because it doesn't exist!\n", hexdump.section_number);
+      }
+      
       symbole_table_elf(exec_op, filename, &ehdr, &shdr_named, &sym_named);
 
       printf("Symbol table '%s' contains %d entries:\n", ".symtab", sym_named.sym_num);
       print_table_sym(&sym_named);
 
+      // END OF READING
+      
       // Closing file
       fclose(filename);
 
@@ -303,17 +391,20 @@ void run(Exec_options *exec_op, char *files[])
 int main(int argc, char *argv[])
 {
   Exec_options exec_op;
+  hexdump_option hexdump;
 
   // Checking the minimum number of arguments
   if (argc < 2)
     print_usage(stderr, EXIT_FAILURE, argv[0]);
 
   // Input detections
-  char **files = init_execution(argc, argv, &exec_op);
+  char **files = init_execution(argc, argv, &exec_op, &hexdump);
 
   // Execution
   run(&exec_op, files);
 
+  if (hexdump.is_string)
+      free(hexdump.section_name);
   free(files);
   return 0;
 }
