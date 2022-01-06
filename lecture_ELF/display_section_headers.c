@@ -14,6 +14,11 @@ void section_print_display_header()
     printf("  [Nr] Name               Type            Addr     Off    Size   ES Flg Lk Inf Al\n");
 }
 
+void section_print_display_header_bis()
+{
+    printf("  [Nr] Name               Type            Addr     Off    Size   ES Flg Lk Inf Al\n");
+}
+
 void section_print_name(char *name)
 {
     if (!name)
@@ -152,11 +157,11 @@ void section_print_flags(Elf32_Word flags)
         flags_out[size] = 'p';
         size--;
     }
-    if ((flags & SHF_GNU_RETAIN) && size > 0)
-    {
-        flags_out[size] = 'y';
-        size--;
-    }
+    //if ((flags & SHF_GNU_RETAIN) && size > 0)
+    //{
+       // flags_out[size] = 'y';
+        //size--;
+    //}
     if ((flags & SHF_EXCLUDE) && size > 0)
     {
         flags_out[size] = 'E';

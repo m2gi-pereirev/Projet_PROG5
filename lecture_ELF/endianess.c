@@ -20,13 +20,32 @@ void header_endianess(Elf32_Ehdr *ehdr)
 void section_headers_endianess(Elf32_Shdr *shdr)
 {
   shdr->sh_name = __bswap_32(shdr->sh_name);
-	shdr->sh_type = __bswap_32(shdr->sh_type);
-	shdr->sh_flags = __bswap_32(shdr->sh_flags);
-	shdr->sh_addr = __bswap_32(shdr->sh_addr);
+  shdr->sh_type = __bswap_32(shdr->sh_type);
+  shdr->sh_flags = __bswap_32(shdr->sh_flags);
+  shdr->sh_addr = __bswap_32(shdr->sh_addr);
   shdr->sh_offset = __bswap_32(shdr->sh_offset);
 	shdr->sh_size = __bswap_32(shdr->sh_size);
 	shdr->sh_link = __bswap_32(shdr->sh_link);
 	shdr->sh_info = __bswap_32(shdr->sh_info);
 	shdr->sh_addralign = __bswap_32(shdr->sh_addralign);
 	shdr->sh_entsize = __bswap_32(shdr->sh_entsize);
+}
+
+void section_content_endianess(char *content, Elf32_Shdr *shdr)
+{
+  for (int i = 0; i < shdr->sh_size; i += 2 )
+    content[i] = __bswap_16(content[i]);
+  shdr->sh_size = __bswap_32(shdr->sh_size);
+  shdr->sh_link = __bswap_32(shdr->sh_link);
+  shdr->sh_info = __bswap_32(shdr->sh_info);
+  shdr->sh_addralign = __bswap_32(shdr->sh_addralign);
+  shdr->sh_entsize = __bswap_32(shdr->sh_entsize);
+}
+
+void symbole_endianess(Elf32_Sym *sym)
+{
+  sym->st_name = __bswap_32(sym->st_name);
+  sym->st_value = __bswap_32(sym->st_value);
+  sym->st_size = __bswap_32(sym->st_size);
+  sym->st_shndx = __bswap_16(sym->st_shndx);
 }

@@ -14,4 +14,11 @@ typedef struct Section_headers_named
   Elf32_Shdr *shdr; // Content of section headers
 } Elf32_Shdr_named;
 
+typedef struct Symbols_table_named
+{
+  int sym_num;        // Number of section headers
+  char **names;     // Names of sections headers
+  Elf32_Sym *sym; // Content of section headers
+} Elf32_Sym_named;
+
 #endif

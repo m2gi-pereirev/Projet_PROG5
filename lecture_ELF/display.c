@@ -11,7 +11,6 @@ void print_usage(FILE *stream, int exit_code, char *program_name)
           "      --sections         An alias for --section-headers\n"
           "  -x --hex-dump=<number|name>\n"
           "                         Dump the contents of section <number|name> as bytes\n"
-          "  -r --relocs            Display the relocations (if present)"
           "\n"
           "  -h  --help             Display this information\n");
   exit(exit_code);
