@@ -237,12 +237,12 @@ void free_sym_named(Elf32_Sym_named *sym_named)
   free(sym_named->sym);
 }
 
-void run(Exec_options *exec_op, char *files[])
+void run(Exec_options *exec_op, char *files[], hexdump_option hexdump)
 {
   FILE *filename = NULL;
   Elf32_Ehdr ehdr;             // File header informations structure
   Elf32_Shdr_named shdr_named; // Section headers with names informations structure
-  char *section_content = NULL
+  char *section_content = NULL;
   Elf32_Sym_named sym_named;
 
   for (int i = 0; i < exec_op->nb_files; i++)
@@ -263,7 +263,7 @@ void run(Exec_options *exec_op, char *files[])
         printf("read-elf: Error: '%s': No such file\n", files[i]);
       }
     }
-    else
+    else // if file openned
     {
       // if there are several files to read
       if (exec_op->nb_files > 1)
@@ -282,7 +282,9 @@ void run(Exec_options *exec_op, char *files[])
       // Reading section headers
       section_headers_read(exec_op, filename, &ehdr, &shdr_named);
 
-      // Display informations
+      // DISPLAY
+      
+      // File header
       if (exec_op->header)
       {
         print_entete(&ehdr); // Print file header
@@ -401,10 +403,10 @@ int main(int argc, char *argv[])
   char **files = init_execution(argc, argv, &exec_op, &hexdump);
 
   // Execution
-  run(&exec_op, files);
+  run(&exec_op, files, hexdump);
 
   if (hexdump.is_string)
-      free(hexdump.section_name);
+    free(hexdump.section_name);
   free(files);
   return 0;
 }
