@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "display_header.h"
+#include "display_section_headers.h"
 #include "display_section.h"
 
 /**

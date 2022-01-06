@@ -2,30 +2,12 @@
 
 void header_print_magic(unsigned char *ident)
 {
-  header_print_isElfType(ident);
   printf("  Magic:\t");
   for (int i = 0; i < 16; i++)
   {
     printf("%.2x ", ident[i]);
   }
   printf("\n");
-}
-
-void header_print_isElfType(unsigned char *ident)
-{
-  if (is_ELF_header(ident))
-    printf("ELF Header:\n");
-  else
-  {
-    printf("Error: Not an ELF - it has the wrong magic bytes at the start\n");
-    exit(EXIT_FAILURE);
-  }
-}
-
-bool is_ELF_header(unsigned char *ident)
-{
-  // Check if the magic number of the file correponds to ELF identifier file
-  return memcmp(ident, ELFMAG, SELFMAG) == 0;
 }
 
 void header_print_class(unsigned char *ident)
@@ -44,7 +26,6 @@ void header_print_class(unsigned char *ident)
 
   case ELFCLASSNONE:
     printf("Error: Invalid class\n");
-    exit(EXIT_FAILURE);
     break;
   }
 }
@@ -65,7 +46,6 @@ void header_print_data(unsigned char *ident)
 
   case ELFDATANONE:
     printf("Error: Unknown data format\n");
-    exit(EXIT_FAILURE);
     break;
   }
 }
@@ -76,7 +56,6 @@ void header_print_version_id(unsigned char *ident)
   {
   case EV_NONE:
     printf("Error : Invalid Version\n");
-    exit(EXIT_FAILURE);
     break;
 
   case EV_CURRENT:
@@ -303,6 +282,7 @@ void header_print_adresse_offset(Elf32_Ehdr *ehdr)
 
 void print_entete(Elf32_Ehdr *ehdr)
 {
+  printf("ELF Header:\n");
   header_print_magic(ehdr->e_ident);
   header_print_class(ehdr->e_ident);
   header_print_data(ehdr->e_ident);
