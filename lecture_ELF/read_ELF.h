@@ -21,6 +21,7 @@ typedef struct execution_options
   bool section_headers; // display only section headers
   bool big_endian_file; // true if file is in big_endian
   bool hexdump;
+  bool symb;
 } Exec_options;
 
 typedef struct hexdump_option
@@ -54,5 +55,9 @@ bool is_ELF_header(unsigned char *ident);
  * @return Elf32_Shdr*
  */
 void section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named);
+
+
+
+void symbole_table_elf (Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named, Elf32_Sym_named *sym_named);
 
 #endif

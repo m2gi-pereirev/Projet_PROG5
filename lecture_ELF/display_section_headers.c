@@ -150,7 +150,7 @@ void section_print_type(Elf32_Word type)
 
 void section_print_flags(Elf32_Word flags)
 {
-    char flags_out[] = "    ";
+    char flags_out[] = "   ";
     int size = 3;
     if ((flags & SHF_MASKPROC) && size > 0)
     {
