@@ -12,6 +12,6 @@
  *
  * @param *sym
  */
-void print_table_sym(Elf32_Sym_named *sym_named);
+void print_table_sym(Elf32_Sym_named *sym_named, int nb_entry);
 
 #endif

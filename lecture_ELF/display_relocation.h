@@ -7,6 +7,6 @@
 
 #include "core.h"
 
-void print_relocation_section(Elf32_Rel *rel_section, Elf32_Shdr *shdr);
+void print_relocation_section(Elf32_Rel *rel_section, Elf32_Shdr *shdr, char *shdr_name);
 
 #endif

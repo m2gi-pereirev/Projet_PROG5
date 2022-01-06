@@ -120,8 +120,13 @@ void symb_print_shndx(uint16_t st_shndx)
         printf("%d ", st_shndx);
 }
 
-void print_symb_tab_Sym_head()
+void print_symb_tab_Sym_head(int nb_entry)
 {
+    if (nb_entry == 1)
+        printf("\nSymbol table '.symtab' contains %d entry:\n", nb_entry);
+    else
+        printf("\nSymbol table '.symtab' contains %d entries:\n", nb_entry);
+
     printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
 }
 
@@ -141,10 +146,10 @@ void symbole_print_number(int i)
     }
 }
 
-void print_table_sym(Elf32_Sym_named *sym_named)
+void print_table_sym(Elf32_Sym_named *sym_named, int nb_entry)
 {
     // INIT DISPLAY
-    print_symb_tab_Sym_head();
+    print_symb_tab_Sym_head(nb_entry);
 
     // DISPLAY
     for (int i = 0; i < sym_named->sym_num; i++)

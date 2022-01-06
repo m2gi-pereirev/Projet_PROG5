@@ -11,3 +11,7 @@ lecture_ELF/display_section.o
 lecture_ELF/read_ELF.o
 lecture_ELF/display.o
 lecture_ELF/read_header_elf.o
+lecture_ELF/endianess.o
+lecture_ELF/display_symbole.o
+lecture_ELF/display_section_headers.o
+lecture_ELF/display_relocation.o

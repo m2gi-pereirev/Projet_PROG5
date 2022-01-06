@@ -12,5 +12,5 @@ void print_relocation_header(char *name, Elf32_Off offset, int nb_entry)
 
 void print_relocation_section(Elf32_Rel *rel_section, Elf32_Shdr *shdr, char *shdr_name)
 {
-  print_relocation_header(shdr_name, shdr->sh_offset);
+  // print_relocation_header(shdr_name, shdr->sh_offset);
 }

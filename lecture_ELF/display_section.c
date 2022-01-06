@@ -3,7 +3,7 @@
 
 void print_section_content_header(char *name)
 {
-  printf("Hex dump of section '%s':\n", name);
+  printf("\nHex dump of section '%s':\n", name);
 }
 
 void print_section(char *section_content, int size)
