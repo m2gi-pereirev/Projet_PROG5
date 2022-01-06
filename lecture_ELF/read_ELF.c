@@ -62,6 +62,22 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
       exec_op->symb = true;
       break;
 
+    case 'x':
+      int tmp;
+      if (sscanf(optarg, "%d", &tmp) == 1) // it's integer
+      {
+        hexdump->is_string = false;
+        hexdump->section_number = atoi(optarg);
+      }
+      else // it's string
+      {
+        hexdump->is_string = true;
+        hexdump->section_name = calloc(strlen(optarg) + 1, sizeof(char));
+        strcpy(hexdump->section_name, optarg);
+      }
+      exec_op->hexdump = true;
+      break;
+        
     case '?': // error usage
       print_usage(stderr, EXIT_FAILURE, argv[0]);
 
@@ -74,7 +90,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
-  else if (!exec_op->header && !exec_op->section_headers && !exec_op->symb)
+  else if (!exec_op->header && !exec_op->section_headers && !exec_op->symb && !exec_op->hexdump)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
@@ -105,9 +121,10 @@ char **init_execution(int argc, char **argv, Exec_options *exec_op, hexdump_opti
   exec_op->big_endian_file = false;
   exec_op->hexdump = false;
   exec_op->symb = false;
-
+  exec_op->hexdump = true;
+  
   hexdump->is_string = false;
-
+  
   return options_read(argc, argv, exec_op, hexdump);
 }
 
@@ -247,11 +264,13 @@ void free_sym_named(Elf32_Sym_named *sym_named)
   free(sym_named->sym);
 }
 
+
 void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
 {
   FILE *filename = NULL;
-  Elf32_Ehdr ehdr; // File header informations structure
-  Elf32_Shdr_named shdr_named;
+  Elf32_Ehdr ehdr;             // File header informations structure
+  Elf32_Shdr_named shdr_named; // Section headers with names informations structure
+  char *section_content = NULL;
   Elf32_Sym_named sym_named;
   char *section_content = NULL;
 
@@ -273,7 +292,7 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
         printf("read-elf: Error: '%s': No such file\n", files[i]);
       }
     }
-    else
+    else // if file openned
     {
       // if there are several files to read
       if (exec_op->nb_files > 1)
@@ -301,6 +320,7 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
         //! READING SECTION HEADERS
         section_headers_read(exec_op, filename, &ehdr, &shdr_named);
 
+
       //! DISPLAY
       //* File header
       if (exec_op->header)
@@ -325,7 +345,6 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
       }
       else if (exec_op->section_headers && ehdr.e_shnum == 0)
       {
-
         //* Section display
         if (exec_op->hexdump)
         {
@@ -389,7 +408,6 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
               printf("readelf: Warning: Section %d was not dump because it doesn't exist!\n", hexdump.section_number);
           }
         }
-        free_shdr_named(&shdr_named);
       }
       //! END OF READING
       symbole_table_elf(exec_op, filename, &ehdr, &shdr_named, &sym_named);
@@ -397,6 +415,8 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
       printf("Symbol table '%s' contains %d entries:\n", ".symtab", sym_named.sym_num);
       print_table_sym(&sym_named);
 
+      // END OF READING
+      
       // Closing file
       fclose(filename);
 
@@ -427,7 +447,6 @@ int main(int argc, char *argv[])
 
   if (hexdump.is_string)
     free(hexdump.section_name);
-
   free(files);
   return 0;
 }
