@@ -8,6 +8,7 @@
 #include "display_section_headers.h"
 #include "display_section.h"
 #include "display_symbole.h"
+#include "display_relocation.h"
 
 /**
  * @brief Display help message to use the program, on the correct output

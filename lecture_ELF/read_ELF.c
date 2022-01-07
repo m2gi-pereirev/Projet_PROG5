@@ -7,7 +7,7 @@
 char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option *hexdump)
 {
   char **files = NULL;
-  const char *const short_options = "haHSsx:";
+  const char *const short_options = "haHSsx:r";
   // Lecture des arguments
   while (1)
   {
@@ -21,6 +21,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
         {"symbols", no_argument, 0, 's'},
         {"hex-dump", required_argument, 0, 'x'},
         {"test", no_argument, 0, 't'},
+        {"relocs", no_argument, 0, 'r'},
         {0, 0, 0, 0}};
 
     int option_index = 0;
@@ -39,6 +40,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
       exec_op->header = true;
       exec_op->section_headers = true;
       exec_op->symb = true;
+      exec_op->rel = true;
       break;
 
     case 'H': // Header display
@@ -69,6 +71,10 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
       exec_op->symb = true;
       break;
 
+    case 'r':
+      exec_op->rel = true;
+      break;
+
     case '?': // error usage
       print_usage(stderr, EXIT_FAILURE, argv[0]);
 
@@ -81,7 +87,7 @@ char **options_read(int argc, char **argv, Exec_options *exec_op, hexdump_option
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
-  else if (!exec_op->header && !exec_op->section_headers && !exec_op->symb && !exec_op->hexdump)
+  else if (!exec_op->header && !exec_op->section_headers && !exec_op->symb && !exec_op->hexdump && !exec_op->rel)
   {
     print_usage(stderr, EXIT_FAILURE, argv[0]);
   }
@@ -112,6 +118,7 @@ char **init_execution(int argc, char **argv, Exec_options *exec_op, hexdump_opti
   exec_op->big_endian_file = false;
   exec_op->hexdump = false;
   exec_op->symb = false;
+  exec_op->rel = false;
 
   hexdump->is_string = false;
 
@@ -141,8 +148,8 @@ bool is_ELF32(unsigned char *ident)
 int section_index_finder(hexdump_option *hexdump, Elf32_Shdr_named *shdr_named)
 {
   int idx = 0;
-      //? Recovering the section index if it exists
-      if (hexdump->is_string) // if string is passed in argument
+  //? Recovering the section index if it exists
+  if (hexdump->is_string) // if string is passed in argument
   {
     // Search for the header index
     while (idx < shdr_named->shnum && strcmp(hexdump->section_name, shdr_named->names[idx]) != 0)
@@ -153,6 +160,35 @@ int section_index_finder(hexdump_option *hexdump, Elf32_Shdr_named *shdr_named)
     idx = hexdump->section_number;
   }
   return idx;
+}
+
+void relocation_name_value_association(Elf32_Rel_named *rel_named, Elf32_Sym_named *sym_named)
+{
+  if (rel_named->rel_type)
+  {
+    for (int i = 0; i < rel_named->rel_num; i++)
+    {
+      //$ Name association
+      rel_named->names[i] = calloc(strlen(sym_named->names[ELF32_R_SYM(rel_named->rel[i].r_info)]) + 1, sizeof(char));
+      strcpy(rel_named->names[i], sym_named->names[ELF32_R_SYM(rel_named->rel[i].r_info)]);
+
+      //$ Value association
+      rel_named->sym_val[i] = sym_named->sym[ELF32_R_SYM(rel_named->rel[i].r_info)].st_value;
+    }
+  }
+  else
+  {
+    for (int i = 0; i < rel_named->rel_num; i++)
+    {
+      //$ Name association
+      rel_named->names[i] = calloc(strlen(sym_named->names[ELF32_R_SYM(rel_named->rela[i].r_info)]) + 1, sizeof(char));
+      strcpy(rel_named->names[i], sym_named->names[ELF32_R_SYM(rel_named->rela[i].r_info)]);
+
+      //$ Value association
+      rel_named->sym_val[i] = sym_named->sym[ELF32_R_SYM(rel_named->rela[i].r_info)].st_value;
+    }
+  }
+
 }
 
 //* ------------------------------------------------
@@ -217,49 +253,49 @@ void symbole_table_elf(Exec_options *exec_op, FILE *filename, Elf32_Shdr_named *
 {
   int idx = 0;
   char *Symbole_names;
-  int idx_sym_names = 0;
+  int idx_sym_names;
 
   while (idx < shdr_named->shnum && shdr_named->shdr[idx].sh_type != SHT_SYMTAB)
     ++idx;
 
   if (idx < shdr_named->shnum)
   {
-    // Allocation
+    //$ Allocation
     sym_named->sym_num = (int)(shdr_named->shdr[idx].sh_size / sizeof(Elf32_Sym));
     sym_named->sym = calloc(sym_named->sym_num, sizeof(Elf32_Sym));
     sym_named->names = calloc(sym_named->sym_num, sizeof(char *));
 
-    // Getting names
-    while (idx_sym_names < shdr_named->shnum && shdr_named->shdr[idx_sym_names].sh_type != SHT_STRTAB)
-      ++idx_sym_names;
+    idx_sym_names = shdr_named->shdr[idx].sh_link;
 
-    if (idx_sym_names < shdr_named->shnum)
+    Symbole_names = calloc(1, shdr_named->shdr[idx_sym_names].sh_size);
+
+    fseek(filename, shdr_named->shdr[idx_sym_names].sh_offset, SEEK_SET);
+    fread(Symbole_names, 1, shdr_named->shdr[idx_sym_names].sh_size, filename);
+
+    for (int i = 0; i < sym_named->sym_num; i++)
     {
-      Symbole_names = calloc(1, shdr_named->shdr[idx_sym_names].sh_size);
+      fseek(filename, shdr_named->shdr[idx].sh_offset + i * sizeof(Elf32_Sym), SEEK_SET);
+      fread(&sym_named->sym[i], 1, sizeof(Elf32_Sym), filename);
 
-      fseek(filename, shdr_named->shdr[idx_sym_names].sh_offset, SEEK_SET);
-      fread(Symbole_names, 1, shdr_named->shdr[idx_sym_names].sh_size, filename);
+      //? Endianess
+      if (exec_op->big_endian_file)
+        symbole_endianess(&sym_named->sym[i]);
 
-      for (int i = 0; i < sym_named->sym_num; i++)
+      //? Association of the name with the header
+      if ((ELF32_ST_TYPE(sym_named->sym[i].st_info) == STT_NOTYPE) && sym_named->sym[i].st_name)
       {
-        fseek(filename, shdr_named->shdr[idx].sh_offset + i * sizeof(Elf32_Sym), SEEK_SET);
-        fread(&sym_named->sym[i], 1, sizeof(Elf32_Sym), filename);
-
-        // Endianess
-        if (exec_op->big_endian_file)
-          symbole_endianess(&sym_named->sym[i]);
-
-        // Association of the name with the header
-        if (sym_named->sym[i].st_name)
-        {
-          char *name = "";
-          name = Symbole_names + sym_named->sym[i].st_name;
-          sym_named->names[i] = calloc(strlen(name) + 1, sizeof(char));
-          strcpy(sym_named->names[i], name);
-        }
+        char *name = "";
+        name = Symbole_names + sym_named->sym[i].st_name;
+        sym_named->names[i] = calloc(strlen(name) + 1, sizeof(char));
+        strcpy(sym_named->names[i], name);
       }
-      free(Symbole_names);
+      if (ELF32_ST_TYPE(sym_named->sym[i].st_info) == STT_SECTION && sym_named->sym[i].st_shndx)
+      {
+        sym_named->names[i] = calloc(strlen(shdr_named->names[sym_named->sym[i].st_shndx]) + 1, sizeof(char));
+        strcpy(sym_named->names[i], shdr_named->names[sym_named->sym[i].st_shndx]);
+      }
     }
+    free(Symbole_names);
   }
   else
     printf("No symbols table!\n");
@@ -296,6 +332,56 @@ int section_content_read(Exec_options *exec_op, FILE *filename, hexdump_option *
   return idx;
 }
 
+//? RELOCATION TABLE
+void relocation_sections_read(Exec_options *exec_op, FILE *filename, Elf32_Shdr *shdr, Elf32_Rel_named *rel_named)
+{
+  //$ REL section
+  if (shdr->sh_type == SHT_REL)
+  {
+    rel_named->rel_type = true;
+    rel_named->rel_num = shdr->sh_size / sizeof(Elf32_Rel);
+
+    //$ Allocation
+    rel_named->names = calloc(rel_named->rel_num, sizeof(char *));
+    rel_named->sym_val = calloc(rel_named->rel_num, sizeof(uint32_t));
+    rel_named->rel = calloc(rel_named->rel_num, sizeof(Elf32_Rel));
+
+    fseek(filename, shdr->sh_offset, SEEK_SET);
+    for (int i = 0; i < rel_named->rel_num; i++)
+    {
+      //$ Reading sym entries
+      fread(&rel_named->rel[i], sizeof(Elf32_Rel), 1, filename);
+
+      //$ Endianess
+      if (exec_op->big_endian_file)
+        rel_section_endianess(&rel_named->rel[i]);
+    }
+  }
+
+  //$ RELA section
+  if (shdr->sh_type == SHT_RELA)
+  {
+    rel_named->rel_type = false;
+    rel_named->rel_num = shdr->sh_size - sizeof(Elf32_Rela);
+
+    //$ Allocation
+    rel_named->names = calloc(rel_named->rel_num, sizeof(char *));
+    rel_named->sym_val = calloc(rel_named->rel_num, sizeof(uint32_t));
+    rel_named->rel = calloc(rel_named->rel_num, sizeof(Elf32_Rela));
+
+    fseek(filename, shdr->sh_offset, SEEK_SET);
+    for (int i = 0; i < rel_named->rel_num; i++)
+    {
+      //$ Reading sym entries
+      fread(&rel_named->rela[i], sizeof(Elf32_Rela), 1, filename);
+
+      //$ Endianess
+      if (exec_op->big_endian_file)
+        rela_section_endianess(&rel_named->rela[i]);
+    }
+  }
+}
+
 //* ------------------------------------------------
 //!              FREE'D ALLOCATION
 //* ------------------------------------------------
@@ -321,6 +407,20 @@ void free_sym_named(Elf32_Sym_named *sym_named)
   free(sym_named->sym);
 }
 
+void free_rel_named(Elf32_Rel_named *rel_named)
+{
+  for (int i = 0; i < rel_named->rel_num; i++)
+  {
+    free(rel_named->names[i]);
+  }
+  free(rel_named->sym_val);
+  free(rel_named->names);
+  if (rel_named->rel_type)
+    free(rel_named->rel);
+  else
+    free(rel_named->rela);
+}
+
 //* ------------------------------------------------
 //!                    RUN
 //* ------------------------------------------------
@@ -331,13 +431,15 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
   FILE *filename = NULL;
   Elf32_Ehdr ehdr;             // File header informations structure
   Elf32_Shdr_named shdr_named; // Section headers with names informations structure
-  Elf32_Sym_named sym_named;
+  Elf32_Sym_named sym_named;   // Symbols table informations structure
+  Elf32_Rel_named rel_named;   // Relocation section informations structure
 
   //? EXECUTION
   for (int i = 0; i < exec_op->nb_files; i++)
   {
     filename = fopen(files[i], "rb"); // Opening the file for binary read
     // Checking file openned
+    //! File not opened
     if (filename == NULL)
     {
       if (exec_op->nb_files == 1) // if only one file
@@ -352,7 +454,8 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
         printf("read-elf: Error: '%s': No such file\n", files[i]);
       }
     }
-    else //* if file openned
+    //! if file openned
+    else
     {
       //$ if there are several files to read
       if (exec_op->nb_files > 1)
@@ -380,12 +483,14 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
       }
       ////===========================================================================
 
-
       //? 32-bit ELF file
       if (is_ELF_file(ehdr.e_ident) && is_ELF32(ehdr.e_ident))
       {
         //* READING SECTION HEADERS
         section_headers_read(exec_op, filename, &ehdr, &shdr_named);
+
+        //* READING SYMBOLS TABLE
+        symbole_table_elf(exec_op, filename, &shdr_named, &sym_named);
 
         //* Display File header
         if (exec_op->header)
@@ -408,17 +513,47 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
           printf("There is no section in this file !\n");
         }
 
+        //* Relocation Section
+        if (exec_op->rel)
+        {
+          if (shdr_named.shnum > 0)
+          {
+            bool rel_section_detected = false;
+            for (int idx = 0; idx < shdr_named.shnum; idx++)
+            {
+              //$ Reading
+              relocation_sections_read(exec_op, filename, &shdr_named.shdr[idx], &rel_named);
+
+              if (shdr_named.shdr[idx].sh_type == SHT_REL || shdr_named.shdr[idx].sh_type == SHT_RELA)
+              {
+                //$ Sym name and value association for rel
+                relocation_name_value_association(&rel_named, &sym_named);
+
+                //$ Display
+                print_relocation_section(&rel_named, shdr_named.shdr[idx].sh_offset, shdr_named.names[idx]);
+
+                //$ Free allocation
+                free_rel_named(&rel_named);
+
+                rel_section_detected = true;
+              }
+            }
+            if (!rel_section_detected)
+            {
+              printf("readelf: There is no relocation section in this file!\n");
+            }
+          }
+          else
+          {
+            printf("readelf: There is no relocation section in this file!\n");
+          }
+        }
+
         //* Symbols Table
         if (exec_op->symb)
         {
-          //$ Reading
-          symbole_table_elf(exec_op, filename, &shdr_named, &sym_named);
-
           //$ Display
           print_table_sym(&sym_named);
-
-          //$ Free allocation
-          free_sym_named(&sym_named);
         }
 
         //* Section display
@@ -440,10 +575,11 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
           printf("There is no section in this file !\n");
         }
 
-          //! END OF READING
+        //! END OF READING
 
-          //* free allcoation
-          free_shdr_named(&shdr_named);
+        //* free allocation
+        free_sym_named(&sym_named);
+        free_shdr_named(&shdr_named);
       }
       // Closing file
       fclose(filename);

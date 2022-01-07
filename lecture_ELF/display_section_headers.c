@@ -151,17 +151,17 @@ void section_print_type(Elf32_Word type)
 void section_print_flags(Elf32_Word flags)
 {
     char flags_out[] = "   ";
-    int size = 3;
+    int size = 2;
     if ((flags & SHF_MASKPROC) && size > 0)
     {
         flags_out[size] = 'p';
         size--;
     }
-    //if ((flags & SHF_GNU_RETAIN) && size > 0)
-    //{
-       // flags_out[size] = 'y';
-        //size--;
-    //}
+    if ((flags & SHF_GNU_RETAIN) && size > 0)
+    {
+       flags_out[size] = 'y';
+        size--;
+    }
     if ((flags & SHF_EXCLUDE) && size > 0)
     {
         flags_out[size] = 'E';
@@ -232,7 +232,10 @@ void section_print_flags(Elf32_Word flags)
         flags_out[size] = 'W';
         size--;
     }
-    printf("%s ", flags_out);
+    if(size < 4)
+        printf("%s ", flags_out);
+    else
+        printf("   ");
 }
 
 void section_print_decalage(Elf32_Off decalage)

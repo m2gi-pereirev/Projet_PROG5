@@ -24,6 +24,7 @@ typedef struct execution_options
   bool big_endian_file; // true if file is in big_endian
   bool hexdump;
   bool symb;
+  bool rel;
 } Exec_options;
 
 typedef struct hexdump_option

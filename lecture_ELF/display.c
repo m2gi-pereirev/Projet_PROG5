@@ -9,6 +9,7 @@ void print_usage(FILE *stream, int exit_code, char *program_name)
           "  -H  --file-header      Display the ELF file header\n"
           "  -S  --section-headers  Display the sections' header\n"
           "      --sections         An alias for --section-headers\n"
+          "  -r --relocs            Display the relocations (if present)"
           "  -x --hex-dump=<number|name>\n"
           "                         Dump the contents of section <number|name> as bytes\n"
           "\n"

@@ -50,3 +50,16 @@ void symbole_endianess(Elf32_Sym *sym)
   sym->st_size = __bswap_32(sym->st_size);
   sym->st_shndx = __bswap_16(sym->st_shndx);
 }
+
+void rel_section_endianess(Elf32_Rel *rel)
+{
+  rel->r_offset = __bswap_32(rel->r_offset);
+  rel->r_info = __bswap_32(rel->r_info);
+}
+
+void rela_section_endianess(Elf32_Rela *rela)
+{
+  rela->r_offset = __bswap_32(rela->r_offset);
+  rela->r_info = __bswap_32(rela->r_info);
+  rela->r_addend = __bswap_32(rela->r_addend);
+}

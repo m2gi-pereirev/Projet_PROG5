@@ -33,4 +33,18 @@ void section_content_endianess(char *content, Elf32_Shdr *shdr);
  */
 void symbole_endianess(Elf32_Sym *sym);
 
+/**
+ * @brief Allows to switch from big to small endian and vice versa for one relocation entry
+ *
+ * @param rel Elf relocation structure
+ */
+void rel_section_endianess(Elf32_Rel *rel);
+
+/**
+ * @brief Allows to switch from big to small endian and vice versa for one relocation with addend
+ *
+ * @param rela Elf relocation with addend structure
+ */
+void rela_section_endianess(Elf32_Rela *rela);
+
 #endif
