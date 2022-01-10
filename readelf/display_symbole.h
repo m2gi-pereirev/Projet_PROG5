@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <elf.h>
 
-#include "core.h"
+#include "utils.h"
 
 /**
  * @brief Print the table of symbols

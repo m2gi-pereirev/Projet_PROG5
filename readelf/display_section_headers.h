@@ -7,7 +7,7 @@
 #include <inttypes.h>
 #include <string.h>
 
-#include "core.h"
+#include "utils.h"
 
 /**
  * @brief prints the name of section

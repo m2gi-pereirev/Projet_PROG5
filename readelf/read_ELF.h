@@ -12,9 +12,9 @@
 
 #include "endianess.h"
 #include "display.h"
-#include "core.h"
+#include "utils.h"
 
-//! Strutures
+//! Structures
 
 typedef struct execution_options
 {

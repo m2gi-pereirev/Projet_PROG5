@@ -205,7 +205,7 @@ void header_read(Elf32_Ehdr *ehdr, FILE *filename)
 void section_headers_read(Exec_options *exec_op, FILE *filename, Elf32_Ehdr *ehdr, Elf32_Shdr_named *shdr_named)
 {
   shdr_named->shnum = ehdr->e_shnum;
-  int last_entry = ehdr->e_shnum - 1;
+  int last_entry = ehdr->e_shstrndx;
   char *Section_Names;
 
   // Allocation
