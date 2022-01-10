@@ -46,9 +46,12 @@ struct Elf32_stct
 
 typedef struct Elf32_file
 {
+  unsigned long int eh_size;
   Elf32_Ehdr *ehdr;        // Header of the file
   Elf32_stct *section;     // Array of section
+  unsigned long int sh_size;
   Elf32_Shdr_named *shdrn; // Section header
+  unsigned long int sym_size;
   Elf32_Sym_named *symn;   // Symbole table
 } Elf32_file;
 
