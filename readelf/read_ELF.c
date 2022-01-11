@@ -168,12 +168,13 @@ void relocation_name_value_association(Elf32_Rel_named *rel_named, Elf32_Sym_nam
   {
     for (int i = 0; i < rel_named->rel_num; i++)
     {
+      unsigned rel_info = ELF32_R_SYM(rel_named->rel[i].r_info);
       //$ Name association
-      rel_named->names[i] = calloc(strlen(sym_named->names[ELF32_R_SYM(rel_named->rel[i].r_info)]) + 1, sizeof(char));
-      strcpy(rel_named->names[i], sym_named->names[ELF32_R_SYM(rel_named->rel[i].r_info)]);
+      rel_named->names[i] = calloc(strlen(sym_named->names[rel_info]) + 1, sizeof(char));
+      strcpy(rel_named->names[i], sym_named->names[rel_info]);
 
       //$ Value association
-      rel_named->sym_val[i] = sym_named->sym[ELF32_R_SYM(rel_named->rel[i].r_info)].st_value;
+      rel_named->sym_val[i] = sym_named->sym[rel_info].st_value;
     }
   }
   else
@@ -188,7 +189,6 @@ void relocation_name_value_association(Elf32_Rel_named *rel_named, Elf32_Sym_nam
       rel_named->sym_val[i] = sym_named->sym[ELF32_R_SYM(rel_named->rela[i].r_info)].st_value;
     }
   }
-
 }
 
 //* ------------------------------------------------

@@ -31,18 +31,6 @@ void section_headers_endianess(Elf32_Shdr *shdr)
 	shdr->sh_entsize = __bswap_32(shdr->sh_entsize);
 }
 
-void section_content_endianess(char *content, Elf32_Shdr *shdr)
-{
-  // 2 by 2 because we invert by 16 bits and that a char contains 8 bits
-  for (int i = 0; i < shdr->sh_size; i += 2)
-    content[i] = __bswap_16(content[i]);
-  shdr->sh_size = __bswap_32(shdr->sh_size);
-  shdr->sh_link = __bswap_32(shdr->sh_link);
-  shdr->sh_info = __bswap_32(shdr->sh_info);
-  shdr->sh_addralign = __bswap_32(shdr->sh_addralign);
-  shdr->sh_entsize = __bswap_32(shdr->sh_entsize);
-}
-
 void symbole_endianess(Elf32_Sym *sym)
 {
   sym->st_name = __bswap_32(sym->st_name);
@@ -55,11 +43,4 @@ void rel_section_endianess(Elf32_Rel *rel)
 {
   rel->r_offset = __bswap_32(rel->r_offset);
   rel->r_info = __bswap_32(rel->r_info);
-}
-
-void rela_section_endianess(Elf32_Rela *rela)
-{
-  rela->r_offset = __bswap_32(rela->r_offset);
-  rela->r_info = __bswap_32(rela->r_info);
-  rela->r_addend = __bswap_32(rela->r_addend);
 }

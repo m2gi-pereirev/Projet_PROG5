@@ -1,68 +1,59 @@
 #include "section_generator.h"
 
-Elf32_stct *section_container_summoner(void)
+Elf32_stct_item *section_container_summoner(int size, int idx, char *name, char *content)
 {
-  Elf32_stct *container = calloc(1, sizeof(Elf32_stct));
+  Elf32_stct_item *container = calloc(1, sizeof(Elf32_stct_item));
+
+  //$ Allocation
+  container->name = calloc(strlen(name) + 1, sizeof(char));
+  container->content = calloc(size, sizeof(char));
+
+  //$ Assignment
+  container->size = size;
+  container->idx = idx;
+  container->next = NULL;
+  strcpy(container->name, name);
+  memcpy(container->content, content, size);
+
   return container;
 }
 
-void section_container_destroyer(Elf32_stct *container)
+void section_container_destroyer(Elf32_stct_item *container)
 {
   free(container->name);
   free(container->content);
   free(container);
 }
 
-void sections_list_destroyer(Elf32_stct *head)
+void sections_list_destroyer(Elf32_stct_item *cargo)
 {
-  if (head->next != NULL)
+  if (cargo != NULL)
   {
-    sections_list_destroyer(head->next);
-    section_container_destroyer(head);
+    sections_list_destroyer(cargo->next);
+    section_container_destroyer(cargo);
   }
 }
 
-void section_containers_display(Elf32_stct *sections)
+void section_containers_display(Elf32_stct_item *cargo)
 {
-  if (sections != NULL)
+  if (cargo != NULL)
   {
-    if (sections->name != NULL)
-      printf("%s\n", sections->name);
-    section_containers_display(sections->next);
+    if (cargo->name != NULL)
+      printf("%s\n", cargo->name);
+    section_containers_display(cargo->next);
   }
 }
 
-void section_container_adder(Elf32_stct *head, char *content, char *name, int idx, int size)
+Elf32_stct_list section_container_adder(Elf32_stct_item *cargo, char *content, char *name, int idx, int size)
 {
-  if (head != NULL)
+  if (cargo == NULL)
   {
-    if (head->next != NULL)
-    {
-      section_container_adder(head->next, content, name, idx, size);
-    }
-    else
-    {
-      Elf32_stct *new_container = section_container_summoner();
-
-      new_container->name = calloc(strlen(name) + 1, sizeof(char));
-      new_container->content = calloc(size, sizeof(char));
-      new_container->size = size;
-      new_container->idx = idx;
-
-      strcpy(new_container->name, name);
-      memcpy(new_container->content, content, size);
-      head->next = new_container;
-    }
+    Elf32_stct_item *new_container = section_container_summoner(size, idx, name, content);
+    return new_container;
   }
   else
   {
-    Elf32_stct *new_container = section_container_summoner();
-    new_container->name = calloc(strlen(name), sizeof(char));
-    new_container->content = calloc(size, sizeof(char));
-    new_container->size = size;
-    new_container->idx = idx;
-    strcpy(new_container->name, name);
-    memcpy(new_container->content, content, size);
-    head = new_container;
+    cargo->next = section_container_adder(cargo->next, content, name, idx, size);
+    return cargo;
   }
 }

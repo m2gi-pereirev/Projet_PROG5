@@ -70,6 +70,7 @@ void section_headers_storage(char *content, Elf32_Shdr_named *shdrn, unsigned lo
       strcpy(shdrn->names[i], name);
     }
   }
+  free(Section_names);
 }
 
 int sym_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, bool is_big_endian)
@@ -116,6 +117,7 @@ int sym_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, b
         strcpy(symn->names[i], shdrn->names[symn->sym[i].st_shndx]);
       }
     }
+    free(Sym_names);
     return shdrn->shdr[sym_idx].sh_size;
   }
   return -1;
@@ -126,77 +128,67 @@ bool is_section_code(Elf32_Shdr_named *shdrn, int i)
   return (shdrn->shdr[i].sh_type != SHT_NULL && shdrn->shdr[i].sh_type != SHT_REL && shdrn->shdr[i].sh_type != SHT_SYMTAB && shdrn->shdr[i].sh_type != SHT_STRTAB);
 }
 
-void section_content_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_stct *head, int *i)
+Elf32_stct_list section_content_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_stct_list cargo)
 {
-  if (*i < shdrn->shnum)
+  for (int i = 0; i < shdrn->shnum; i++)
   {
-    if (is_section_code(shdrn, *i))
+    if (is_section_code(shdrn, i))
     {
-      section_container_adder(head, content + shdrn->shdr[(*i)].sh_offset, shdrn->names[(*i)], *i, shdrn->shdr[(*i)].sh_size);
-      ++(*i);
-      section_content_storage(content, shdrn, head, i);
-    }
-    else
-    {
-      ++(*i);
-      section_content_storage(content, shdrn, head, i);
+      cargo = section_container_adder(cargo, content + shdrn->shdr[(i)].sh_offset, shdrn->names[(i)], i, shdrn->shdr[(i)].sh_size);
     }
   }
+  return cargo;
 }
 
-void init_section_content_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_stct *head)
+Elf32_Rel_named *rel_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, int *nb_rel, bool is_big_endian)
 {
-  int i = 0;
-  head = NULL;
-  section_content_storage(content, shdrn, head, &i);
-}
-
-int rel_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, Elf32_Rel_named *reln, int nb_rel, bool is_big_endian)
-{
-  reln = NULL;
-  nb_rel = 0;
+  Elf32_Rel_named *reln = NULL;
+  *nb_rel = 0;
+  int rel_idx = 0;
 
   // Get number of relocation section
   for (int i = 0; i < shdrn->shnum; i++)
   {
     if (shdrn->shdr[i].sh_type == SHT_REL)
-      ++nb_rel;
+      ++(*nb_rel);
   }
 
-  reln = calloc(nb_rel, sizeof(Elf32_Rel_named));
-
-  int rel_idx = 0;
-  for (int i = 0; i < shdrn->shnum; i++)
+  if (*nb_rel > 0)
   {
-    if (shdrn->shdr[i].sh_type == SHT_REL && rel_idx < nb_rel)
+    reln = calloc(*nb_rel, sizeof(Elf32_Rel_named));
+
+    for (int i = 0; i < shdrn->shnum; i++)
     {
-      reln[rel_idx].rel_num = shdrn->shdr[i].sh_size / sizeof(Elf32_Rel);
-      reln[rel_idx].info = shdrn->shdr[i].sh_info;
-
-      //$ Allocation
-      reln[rel_idx].names = calloc(reln[rel_idx].rel_num, sizeof(char *));
-      reln[rel_idx].sym_val = calloc(reln[rel_idx].rel_num, sizeof(uint32_t));
-      reln[rel_idx].rel = calloc(reln[rel_idx].rel_num, sizeof(Elf32_Rel));
-
-      for (int j = 0; j < reln[rel_idx].rel_num; j++)
+      if (shdrn->shdr[i].sh_type == SHT_REL)
       {
-        memcpy(&reln[rel_idx].rel[j], content + shdrn->shdr[i].sh_offset, sizeof(Elf32_Rel));
+        reln[rel_idx].rel_num = shdrn->shdr[i].sh_size / sizeof(Elf32_Rel);
 
-        //? endianess
-        if (is_big_endian)
-          rel_section_endianess(&reln[rel_idx].rel[j]);
+        //$ Allocation
+        reln[rel_idx].names = calloc(reln[rel_idx].rel_num, sizeof(char *));
+        reln[rel_idx].sym_val = calloc(reln[rel_idx].rel_num, sizeof(uint32_t));
+        reln[rel_idx].rel = calloc(reln[rel_idx].rel_num, sizeof(Elf32_Rel));
 
-        //$ Name association
-        reln[rel_idx].names[j] = calloc(strlen(symn->names[ELF32_R_SYM(reln[rel_idx].rel[j].r_info)]) + 1, sizeof(char));
-        strcpy(reln[rel_idx].names[j], symn->names[ELF32_R_SYM(reln[rel_idx].rel[j].r_info)]);
+        for (int j = 0; j < reln[rel_idx].rel_num; j++)
+        {
+          memcpy(&reln[rel_idx].rel[j], content + shdrn->shdr[i].sh_offset, sizeof(Elf32_Rel));
 
-        //$ Value association
-        reln[rel_idx].sym_val[j] = symn->sym[ELF32_R_SYM(reln[rel_idx].rel[j].r_info)].st_value;
+          if (is_big_endian)
+            rel_section_endianess(&reln[rel_idx].rel[j]);
+
+          unsigned rel_info = ELF32_R_SYM(reln[rel_idx].rel[j].r_info);
+
+          //$ Name association
+          reln[rel_idx].names[j] = calloc(strlen(symn->names[rel_info]) + 1, sizeof(char));
+          strcpy(reln[rel_idx].names[j], symn->names[rel_info]);
+
+          //$ Value association
+          reln[rel_idx].sym_val[j] = symn->sym[rel_info].st_value;
+        }
+        ++rel_idx;
       }
-      ++rel_idx;
     }
   }
-  return nb_rel;
+  return reln;
 }
 
 void free_elf32_file(Elf32_file *elf)
@@ -210,6 +202,7 @@ void free_elf32_file(Elf32_file *elf)
     free(elf->shdrn->names[i]);
   free(elf->shdrn->names);
   free(elf->shdrn->shdr);
+  free(elf->shdrn);
   elf->sh_size = 0;
 
   //$ Table of Symbols
@@ -217,18 +210,21 @@ void free_elf32_file(Elf32_file *elf)
     free(elf->symn->names[i]);
   free(elf->symn->names);
   free(elf->symn->sym);
+  free(elf->symn);
 
   //$ Relocation Tables
   for (int i = 0; i < elf->nb_rel; i++)
   {
-    for (int j = 0; j < elf->reln->rel_num; j++)
+    for (int j = 0; j < elf->reln[i].rel_num; j++)
       free(elf->reln[i].names[j]);
     free(elf->reln[i].sym_val);
     free(elf->reln[i].names);
     free(elf->reln[i].rel);
   }
+  free(elf->reln);
 
-  // sections_list_destroyer(elf->section);
+  //$ Sections content
+  sections_list_destroyer(elf->sections_array);
 }
 
 void storage_elf_content(char *content, Elf32_file *elf)
@@ -268,12 +264,15 @@ void storage_elf_content(char *content, Elf32_file *elf)
     elf->symn = calloc(1, sizeof(Elf32_Sym_named));
     elf->sym_size = sym_storage(content, elf->shdrn, elf->symn, elf->big_endian);
 
-    init_section_content_storage(content, elf->shdrn, elf->section);
+    //* SECTION CONTENT STORAGE
+    elf->sections_array = NULL;
+    elf->sections_array = section_content_storage(content, elf->shdrn, elf->sections_array);
 
-    elf->nb_rel = rel_storage(content, elf->shdrn, elf->symn, elf->reln, elf->nb_rel, elf->big_endian);
+    //* RELOCATION SECTION STORAGE
+    elf->reln = rel_storage(content, elf->shdrn, elf->symn, &elf->nb_rel, elf->big_endian);
 
+    //! Leaks of memory
     free_elf32_file(elf);
   }
   free(content);
-  free(elf->ehdr);
 }
