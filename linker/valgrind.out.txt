@@ -1,0 +1,122 @@
+==99468== Memcheck, a memory error detector
+==99468== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==99468== Using Valgrind-3.17.0-07f0cdcbb4-20210319X and LibVEX; rerun with -h for copyright info
+==99468== Command: ./linker
+==99468== Parent PID: 78987
+==99468== 
+--99468-- 
+--99468-- Valgrind options:
+--99468--    --leak-check=full
+--99468--    --show-leak-kinds=all
+--99468--    --track-origins=yes
+--99468--    --verbose
+--99468--    --log-file=valgrind.out.txt
+--99468-- Contents of /proc/version:
+--99468--   Linux version 5.15.8-76051508-generic (jenkins@warp.pop-os.org) (gcc (Ubuntu 11.2.0-7ubuntu2) 11.2.0, GNU ld (GNU Binutils for Ubuntu) 2.37) #202112141040~1639505278~21.10~0ede46a SMP Tue Dec 14 22:38:29 U
+--99468-- 
+--99468-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--99468-- Page sizes: currently 4096, max supported 4096
+--99468-- Valgrind library directory: /usr/libexec/valgrind
+--99468-- Reading syms from /home/benny/Documents/00 - Cours/PROG 5/Projet_PROG5/linker/linker
+--99468-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--99468--   Considering /usr/lib/debug/.build-id/14/acb10bbdaefc6a64890c96417426ca820c0faa.debug ..
+--99468--   .. build-id is valid
+--99468-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--99468--    object doesn't have a symbol table
+--99468--    object doesn't have a dynamic symbol table
+--99468-- Scheduler: using generic scheduler lock implementation.
+--99468-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==99468== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-99468-by-benny-on-???
+==99468== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-99468-by-benny-on-???
+==99468== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-99468-by-benny-on-???
+==99468== 
+==99468== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==99468== don't want to do, unless you know exactly what you're doing,
+==99468== or are doing some strange experiment):
+==99468==   /usr/bin/vgdb --pid=99468 ...command...
+==99468== 
+==99468== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==99468==   /path/to/gdb ./linker
+==99468== and then give GDB the following command
+==99468==   target remote | /usr/bin/vgdb --pid=99468
+==99468== --pid is optional if only one valgrind process is running
+==99468== 
+--99468-- REDIR: 0x4028150 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bd4c2 (???)
+--99468-- REDIR: 0x4027f20 (ld-linux-x86-64.so.2:index) redirected to 0x580bd4dc (???)
+--99468-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--99468--    object doesn't have a symbol table
+--99468-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+--99468--    object doesn't have a symbol table
+==99468== WARNING: new redirection conflicts with existing -- ignoring it
+--99468--     old: 0x04028150 (strlen              ) R-> (0000.0) 0x580bd4c2 ???
+--99468--     new: 0x04028150 (strlen              ) R-> (2007.0) 0x04849d70 strlen
+--99468-- REDIR: 0x4024930 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484ac10 (strcmp)
+--99468-- REDIR: 0x40286b0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x484e780 (mempcpy)
+--99468-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--99468--   Considering /usr/lib/debug/.build-id/b8/037b6260865346802321dd2256b8ad1d857e63.debug ..
+--99468--   .. build-id is valid
+--99468-- REDIR: 0x491ed70 (libc.so.6:strnlen) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491f030 (libc.so.6:strpbrk) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491e930 (libc.so.6:strcmp) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x493ce50 (libc.so.6:wcsnlen) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491fca0 (libc.so.6:memset) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x493b6c0 (libc.so.6:wcslen) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x49201e0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x493b4f0 (libc.so.6:wcschr) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491e8b0 (libc.so.6:index) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491efb0 (libc.so.6:rindex) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491fb70 (libc.so.6:memmove) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+==99468== Preferring higher priority redirection:
+--99468--     old: 0x04a15ec0 (__memcpy_avx_unalign) R-> (2018.0) 0x0484bed0 __memcpy_avx_unaligned_erms
+--99468--     new: 0x04a15ec0 (__memcpy_avx_unalign) R-> (2018.1) 0x0484d7c0 memmove
+--99468-- REDIR: 0x493b570 (libc.so.6:wcscmp) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491ffb0 (libc.so.6:stpncpy) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x493bb30 (libc.so.6:wmemchr) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491ee80 (libc.so.6:strncmp) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x4920040 (libc.so.6:strcasecmp) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491ea70 (libc.so.6:strcspn) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x493b5f0 (libc.so.6:wcscpy) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491e820 (libc.so.6:strcat) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x4920130 (libc.so.6:strncasecmp_l) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491fad0 (libc.so.6:bcmp) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x4927b10 (libc.so.6:memrchr) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x49215f0 (libc.so.6:strchrnul) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491e9e0 (libc.so.6:strcpy) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x49200e0 (libc.so.6:strcasecmp_l) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491ecf0 (libc.so.6:strlen) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491ef20 (libc.so.6:strncpy) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491ff20 (libc.so.6:stpcpy) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491fa40 (libc.so.6:memchr) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491f150 (libc.so.6:strspn) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x491fda0 (libc.so.6:mempcpy) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x4920090 (libc.so.6:strncasecmp) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x4921560 (libc.so.6:rawmemchr) redirected to 0x483a1c0 (_vgnU_ifunc_wrapper)
+--99468-- REDIR: 0x4a12d50 (libc.so.6:__strrchr_avx2) redirected to 0x4849750 (rindex)
+--99468-- REDIR: 0x491b990 (libc.so.6:malloc) redirected to 0x48437c0 (malloc)
+--99468-- REDIR: 0x491f610 (libc.so.6:__GI_strstr) redirected to 0x484ea20 (__strstr_sse2)
+--99468-- REDIR: 0x491bc90 (libc.so.6:free) redirected to 0x48461b0 (free)
+--99468-- REDIR: 0x491cc40 (libc.so.6:calloc) redirected to 0x4848970 (calloc)
+--99468-- REDIR: 0x4a15ec0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x484d7c0 (memmove)
+--99468-- REDIR: 0x4a0f440 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x484cf50 (bcmp)
+--99468-- REDIR: 0x4a12f20 (libc.so.6:__strlen_avx2) redirected to 0x4849c50 (strlen)
+==99468== 
+==99468== HEAP SUMMARY:
+==99468==     in use at exit: 52 bytes in 1 blocks
+==99468==   total heap usage: 5 allocs, 4 frees, 241,796 bytes allocated
+==99468== 
+==99468== Searching for pointers to 1 not-freed blocks
+==99468== Checked 112,560 bytes
+==99468== 
+==99468== 52 bytes in 1 blocks are definitely lost in loss record 1 of 1
+==99468==    at 0x4848A23: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==99468==    by 0x10A5FD: storage_elf_content (loading.c:233)
+==99468==    by 0x10962E: main (linker.c:9)
+==99468== 
+==99468== LEAK SUMMARY:
+==99468==    definitely lost: 52 bytes in 1 blocks
+==99468==    indirectly lost: 0 bytes in 0 blocks
+==99468==      possibly lost: 0 bytes in 0 blocks
+==99468==    still reachable: 0 bytes in 0 blocks
+==99468==         suppressed: 0 bytes in 0 blocks
+==99468== 
+==99468== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

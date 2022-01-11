@@ -243,14 +243,13 @@ void storage_elf_content(char *content, Elf32_file *elf)
 
   //* Not ELF file and only 32-bits
 
-  if (memcmp(elf->ehdr->e_ident, ELFMAG, SELFMAG) != 0 || elf->ehdr->e_ident[EI_VERSION] != ELFCLASS32)
+  if (!(memcmp(elf->ehdr->e_ident, ELFMAG, SELFMAG) == 0))
   {
     printf("Error: Not an ELF - it has the wrong magic bytes at the start\n");
-
-    if (elf->ehdr->e_ident[EI_VERSION] != ELFCLASS32)
-    {
-      printf("Error: Invalid class\n");
-    }
+  }
+  else if (elf->ehdr->e_ident[EI_CLASS] != ELFCLASS32)
+  {
+    printf("Error: linker does not support 64-bit ELF files\n");
   }
   else
   {
