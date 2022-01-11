@@ -125,7 +125,7 @@ int sym_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, b
 
 bool is_section_code(Elf32_Shdr_named *shdrn, int i)
 {
-  return (shdrn->shdr[i].sh_type != SHT_NULL && shdrn->shdr[i].sh_type != SHT_REL && shdrn->shdr[i].sh_type != SHT_SYMTAB && shdrn->shdr[i].sh_type != SHT_STRTAB);
+  return (shdrn->shdr[i].sh_type != SHT_NULL && shdrn->shdr[i].sh_type != SHT_REL && shdrn->shdr[i].sh_type != SHT_SYMTAB);
 }
 
 Elf32_stct_list section_content_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_stct_list cargo)
