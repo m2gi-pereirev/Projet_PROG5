@@ -1,5 +1,4 @@
 #include "loading.h"
-#include <sys/stat.h>
 
 char *load_file_content(char *filename)
 {
@@ -16,7 +15,7 @@ char *load_file_content(char *filename)
       size = ftell(file);
       fseek(file, 0L, SEEK_SET);
 
-      //
+      //$ READING
       content = calloc(size, sizeof(char));
       fread(content, sizeof(char), size, file);
 
@@ -125,7 +124,12 @@ int sym_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, b
 
 bool is_section_code(Elf32_Shdr_named *shdrn, int i)
 {
-  return (shdrn->shdr[i].sh_type != SHT_NULL && shdrn->shdr[i].sh_type != SHT_REL && shdrn->shdr[i].sh_type != SHT_SYMTAB);
+  return (shdrn->shdr[i].sh_type != SHT_NULL /* && shdrn->shdr[i].sh_type != SHT_REL */);
+}
+
+bool is_strtab_type(Elf32_Shdr_named *shdrn, int i)
+{
+    return shdrn->shdr[i].sh_type == SHT_SYMTAB;
 }
 
 Elf32_stct_list section_content_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_stct_list cargo)
@@ -134,7 +138,7 @@ Elf32_stct_list section_content_storage(char *content, Elf32_Shdr_named *shdrn, 
   {
     if (is_section_code(shdrn, i))
     {
-      cargo = section_container_adder(cargo, content + shdrn->shdr[(i)].sh_offset, shdrn->names[(i)], i, shdrn->shdr[(i)].sh_size);
+      cargo = section_container_adder(cargo, content + shdrn->shdr[i].sh_offset, shdrn->names[i], shdrn->shdr[i].sh_size, is_strtab_type(shdrn, i), shdrn->shdr[i].sh_offset, shdrn->shdr[i].sh_addralign);
     }
   }
   return cargo;
@@ -269,9 +273,6 @@ void storage_elf_content(char *content, Elf32_file *elf)
 
     //* RELOCATION SECTION STORAGE
     elf->reln = rel_storage(content, elf->shdrn, elf->symn, &elf->nb_rel, elf->big_endian);
-
-    //! Leaks of memory
-    free_elf32_file(elf);
   }
   free(content);
 }

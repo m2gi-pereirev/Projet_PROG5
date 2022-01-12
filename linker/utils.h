@@ -36,8 +36,10 @@ typedef struct Rel_section_named
 typedef struct Elf32_stct_item Elf32_stct_item;
 struct Elf32_stct_item
 {
-  int size;           // Size of the section
-  int idx;                      // Index of section
+  bool strtab_type;             // true if is strtab type section
+  int size;                     // Size of the section
+  uint32_t offset;              //
+  uint32_t align;               //
   char *name;                   // Name of the section
   char *content;                // Array contaning the content of the section
   struct Elf32_stct_item *next; // Pointer to the next section
@@ -59,4 +61,5 @@ typedef struct Elf32_file
   Elf32_Rel_named *reln;          // Array of relocations table
 } Elf32_file;
 
+// Modifier en conséquences
 #endif

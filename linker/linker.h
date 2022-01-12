@@ -12,5 +12,7 @@
 #include "utils.h"
 #include "endianess.h"
 #include "loading.h"
+#include "saving.h"
+#include "verif_output_linker_no_modif.h"
 
 #endif
