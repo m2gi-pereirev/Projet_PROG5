@@ -3,15 +3,22 @@
 `./configure` if(-e phase1 || -e phase2);
 my @test_list = glob("test/*");
 
-foreach my $test (@test_list)
-{
-  print "\n\n".$test . ":\n";
+`rm out.o` if(-e out.o);
 
-  `./phase2 $test out.o`;
-  my @result = `./phase1 -s out.o`;
-  foreach my $output (@result)
-  {
-    print $output;
-  }
+foreach my $test (@test_list){
+	print "\n\n".$test . ":\n";
+
+ my $error = 0;
+
+	my @result = `./phase2 $test out.o`;
+	foreach my $output (@result){
+		print $output;
+	}
+	if (not defined @result[0]){
+		my @result = `./phase1 -s out.o`;
+		foreach my $output (@result){
+			print $output;
+    }
+	}
 }
 
