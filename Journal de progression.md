@@ -31,10 +31,10 @@
 - Suppression totale des fichiers bfile et mise en place des options avec getopt_long  (Benjamin B)
 
 **03 Janvier 2022:**<br>
-- Création de structures pour faciliter la programmation et correction des fuites mémoire avec Valgrind (Benjamin B)
+- Création de structures pour faciliter la programmation et correction des fuites mémoires avec Valgrind (Benjamin B)
 
 **04 Janvier 2022:**<br>
-- Avancée et correction de la étape 2 (Benjamin B)
+- Avancée et correction de l'étape 2 (Benjamin B)
 
 **05 Janvier 2022:**<br>
 - Fin de la étape 2 (Benjamin B)<br>
