@@ -129,56 +129,50 @@ vérification de l'endianness.
 -
 **Entree**: Exec_options *exec_op, char *files[], hexdump_option *hexdump<br>
 **Sortie**: VOID<br>
-*Description*: 
+*Description*: Lit et affiche le fichier ELF, en conséquences des arguments donnée en entrée pas l'utilisateur.
 
-
-### main:
--
-**Entree**: int (nombre d'argument),char * (tableau d'argument)<br>
-**Sortie**: VOID<br>
-*Description*: .
 
 ### load_file_content:
 -
 **Entree**: char \*filename<br>
 **Sortie**: char \*<br>
-*Description*: 
+*Description*: Charge les données du fichiers dans un tableau et retourne ce tableau.
 
 ### storage_elf_content:
 -
 **Entree**: char \*, Elf32_file <br>
 **Sortie**: VOID <br>
-*Description*: 
+*Description*: Stocke les données du fichiers dans la structure Elf32_file.
 
 ### relocations_execution:
 -
 **Entree**: Elf32_file <br>
 **Sortie**: VOID <br>
-*Description*: 
+*Description*: Éxecute la réimplantation du fichier, à l'aide des table de réimplantation.
 
 ### elf_reorganization:
 -
 **Entree**: Elf32_file <br>
 **Sortie**: VOID <br>
-*Description*: 
+*Description*: Effectue la suppression des sections de réimplantation, et réindex les sections ainsi que leur décalage en conséquence.
 
 ### load_elf_output:
 -
 **Entree**: char \*filename <br>
 **Sortie**: FILE <br>
-*Description*: 
+*Description*: Ouvre le fichier de sortie en mode écriture binaire.
 
 ### write_elf_content:
 -
 **Entree**: Elf32_file, FILE <br>
 **Sortie**: VOID <br>
-*Description*: 
+*Description*: Écrit le contenue du fichiers, contenue dans la structure Elf32_file dans le fichier, ouvert au préalable.
 
 ### free_elf32_file:
 -
 **Entree**: Elf32_file <br>
 **Sortie**: VOID <br>
-*Description*: 
+*Description*: Libère toutes les allocations de la structure Elf32_file sans fuites de mémoires.
 
 
 
