@@ -30,4 +30,4 @@ Remplacer le ? par un de ces symboles suivant l'option rechercher:
 
   ./linker < fichier1 > < fichier2 >
 
-  Le fichier1 est le fichier ELF d'entrée et fichier2 le fichier ELF modifié de sortie. Si aucun fichier de sortien'est données, le fichier de sortie devient out.o. 
+  Le fichier1 est le fichier ELF d'entrée et fichier2 le fichier ELF modifié de sortie. Si aucun fichier de sortie n'est données, le fichier de sortie devient out.o. 
