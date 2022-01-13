@@ -1,0 +1,14 @@
+Fonctionnalités implémentées sans bugs apparent : 
+  Affichage de l’en-tête ;
+  Affichage de la table des sections et des détails relatifs à chaque section ;
+  Affichage du contenu d’une section ;
+  Affichage de la table des symboles et des détails relatifs à chaque symbole ;
+  Affichage des tables de réimplantation et des détails relatifs à chaque entrée ;
+  Renumérotation des sections ;
+  Correction des symboles ;
+  Réimplantations de type R ARM ABS* ;
+  Réimplantation de type R ARM JUMP24 et R ARM CALL ;
+  
+Fonctionnalités manquantes :  
+ Interfacage avec le simulateur ARM ;
+ Production d’un fichier exécutable non relogeable.
