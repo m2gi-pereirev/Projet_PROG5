@@ -1,3 +1,5 @@
+### PHASE1
+
 Toutes les fichiers display servent a afficher les differentes resultats suivants l'option choisis de façon identique que la commande readelf.
 
 ### **utils:h**
@@ -131,6 +133,7 @@ vérification de l'endianness.
 **Sortie**: VOID<br>
 *Description*: Lit et affiche le fichier ELF, en conséquences des arguments donnée en entrée pas l'utilisateur.
 
+### PHASE2
 
 ### load_file_content:
 -
