@@ -1,0 +1,14 @@
+#!/bin/bash
+
+`rm phase1 phase2`
+
+cd readelf
+make clean
+make
+cd ../
+ln -s "./readelf/read-elf" "./phase1"
+cd linker/
+make clean
+make
+cd ../
+ln -s "./linker/linker" "./phase2"
