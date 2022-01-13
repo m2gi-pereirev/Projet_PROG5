@@ -39,10 +39,10 @@ struct Elf32_stct_item
   bool symtab;                  // true if it's symtab type section
   bool rel;                     // true if it's relocation table section
   bool strtab;                  //true if it's strtab section
-  int idx;                      //
+  int idx;                      // index of the contained section
   int size;                     // Size of the section
-  uint32_t offset;              //
-  uint32_t align;               //
+  uint32_t offset;              // offset of the contained section
+  uint32_t align;               // alignement of the contained section
   char *name;                   // Name of the section
   char *content;                // Array contaning the content of the section
   struct Elf32_stct_item *next; // Pointer to the next section
@@ -53,12 +53,12 @@ typedef Elf32_stct_item *Elf32_stct_list;
 typedef struct Elf32_file
 {
   bool big_endian;
-  unsigned long int eh_size;      //
+  unsigned long int eh_size;      // size of the file header
   Elf32_Ehdr *ehdr;               // Header of the file
   Elf32_stct_list sections_array; // Array of section
-  unsigned long int sh_size;      //
+  unsigned long int sh_size;      // size of the section headers
   Elf32_Shdr_named *shdrn;        // Section headers
-  unsigned long int sym_size;     //
+  unsigned long int sym_size;     // size of the symbols table
   Elf32_Sym_named *symn;          // Symbols table
   int nb_rel;                     // Number of relocation table
   Elf32_Rel_named *reln;          // Array of relocations table
