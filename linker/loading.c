@@ -216,7 +216,8 @@ void storage_elf_content(char *content, Elf32_file *elf)
   else
     elf->big_endian = false;
 
-  header_endianess(elf->ehdr);
+  if (elf->big_endian)
+    header_endianess(elf->ehdr);
   elf->eh_size = elf->ehdr->e_ehsize;
 
   //* Not ELF file and only 32-bits
@@ -224,10 +225,12 @@ void storage_elf_content(char *content, Elf32_file *elf)
   if (!(memcmp(elf->ehdr->e_ident, ELFMAG, SELFMAG) == 0))
   {
     printf("Error: Not an ELF - it has the wrong magic bytes at the start\n");
+    free(elf->ehdr);
   }
   else if (elf->ehdr->e_ident[EI_CLASS] != ELFCLASS32)
   {
     printf("Error: linker does not support 64-bit ELF files\n");
+    free(elf->ehdr);
   }
   else
   {

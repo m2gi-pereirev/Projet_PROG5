@@ -8,7 +8,7 @@ foreach my $test (@test_list)
   print "\n\n".$test . ":\n";
 
   `./phase2 $test out.o`;
-  my @result = `./phase1 -a out.o`;
+  my @result = `./phase1 -s out.o`;
   foreach my $output (@result)
   {
     print $output;

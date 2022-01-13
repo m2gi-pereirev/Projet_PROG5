@@ -7,8 +7,11 @@
 #include "utils.h"
 #include "section_manipulator.h"
 
-void free_elf32_reln(Elf32_Rel_named *reln, int nb_rel);
-
+/**
+ * @brief free pointer to avoid leaks of memory
+ *
+ * @param *elf pointer to the elf32_file structure
+ */
 void free_elf32_file(Elf32_file *elf);
 
 #endif
