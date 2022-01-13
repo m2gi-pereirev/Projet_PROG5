@@ -23,9 +23,11 @@ Remplacer le ? par un de ces symboles suivant l'option rechercher:
   -r --relocs           			Affiche la table de réalocation (si présente)<br>
   -x --hex-dump=<number|name>       Vidanger le contenu de la section <numéro | nom> en octets+<br>
   -h --help            				Affiche les informations<br>
+  
+  Il est possible d'executer plusieurs le programmes sur plusieurs fichiers a la suite
 
   Pour executer linker, utiliser la commande suivante:
 
   ./linker <fichier1> <fichier2>
 
-  Le fichier1 est le fichier ELF d'entrée et fichier2 le fichier ELF modifié de sortie. 
+  Le fichier1 est le fichier ELF d'entrée et fichier2 le fichier ELF modifié de sortie. Si aucun fichier de sortien'est données, le fichier de sortie devient out.o. 
