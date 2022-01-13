@@ -137,3 +137,48 @@ vérification de l'endianness.
 **Entree**: int (nombre d'argument),char * (tableau d'argument)<br>
 **Sortie**: VOID<br>
 *Description*: .
+
+### load_file_content:
+-
+**Entree**: char \*filename<br>
+**Sortie**: char \*<br>
+*Description*: 
+
+### storage_elf_content:
+-
+**Entree**: char \*, Elf32_file <br>
+**Sortie**: VOID <br>
+*Description*: 
+
+### relocations_execution:
+-
+**Entree**: Elf32_file <br>
+**Sortie**: VOID <br>
+*Description*: 
+
+### elf_reorganization:
+-
+**Entree**: Elf32_file <br>
+**Sortie**: VOID <br>
+*Description*: 
+
+### load_elf_output:
+-
+**Entree**: char \*filename <br>
+**Sortie**: FILE <br>
+*Description*: 
+
+### write_elf_content:
+-
+**Entree**: Elf32_file, FILE <br>
+**Sortie**: VOID <br>
+*Description*: 
+
+### free_elf32_file:
+-
+**Entree**: Elf32_file <br>
+**Sortie**: VOID <br>
+*Description*: 
+
+
+
