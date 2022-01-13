@@ -61,4 +61,4 @@
 - Avancement et fin des étapes 6 , 7 , 8 et 9 (Benjamin B, Evan, Alexis)
 
 **13 Janvier 2022:**<br>
-- Finission des documents complémentaires (Benjamin B, Benjamin F, Alexis)
+- Réalisation des documents complémentaires (Benjamin B, Benjamin F, Alexis)
