@@ -10,7 +10,7 @@ Executer le script bash pour compiler l'executable phase1 (read-elf) et phase2 (
 
 Pour executer read-elf, utiliser la commande suivante:
 
-./read-elf -? <fichiers>
+./read-elf -? < fichiers >
 
 Remplacer le ? par un de ces symboles suivant l'option rechercher:
 
@@ -28,6 +28,6 @@ Remplacer le ? par un de ces symboles suivant l'option rechercher:
 
   Pour executer linker, utiliser la commande suivante:
 
-  ./linker <fichier1> <fichier2>
+  ./linker < fichier1 > < fichier2 >
 
   Le fichier1 est le fichier ELF d'entrée et fichier2 le fichier ELF modifié de sortie. Si aucun fichier de sortien'est données, le fichier de sortie devient out.o. 
