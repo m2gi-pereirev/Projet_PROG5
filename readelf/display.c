@@ -11,7 +11,7 @@ void print_usage(FILE *stream, int exit_code, char *program_name)
           "     --sections         An alias for --section-headers\n"
           "  -s --syms              Display the symbol table\n"
           "     --symbols           An alias for --syms\n"
-          "  -r --relocs            Display the relocations (if present)"
+          "  -r --relocs            Display the relocations (if present)\n"
           "  -x --hex-dump=<number|name>\n"
           "                         Dump the contents of section <number|name> as bytes\n"
           "\n"

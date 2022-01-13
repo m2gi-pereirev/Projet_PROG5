@@ -147,13 +147,13 @@ bool is_ELF32(unsigned char *ident)
 
 int section_index_finder(hexdump_option *hexdump, Elf32_Shdr_named *shdr_named)
 {
-  int idx = 0;
+  int idx = 1;
   //? Recovering the section index if it exists
   if (hexdump->is_string) // if string is passed in argument
   {
     // Search for the header index
     while (idx < shdr_named->shnum && strcmp(hexdump->section_name, shdr_named->names[idx]) != 0)
-      idx++;
+      ++idx;
   }
   else // if int is passed in argument
   {
@@ -302,23 +302,23 @@ void symbole_table_elf(Exec_options *exec_op, FILE *filename, Elf32_Shdr_named *
 }
 
 //? SECTION CONTENT
-int section_content_read(Exec_options *exec_op, FILE *filename, hexdump_option *hexdump, Elf32_Shdr_named *shdr_named, char *section_content)
+char *section_content_read(Exec_options *exec_op, FILE *filename, hexdump_option *hexdump, Elf32_Shdr_named *shdr_named, int idx)
 {
-  int idx = section_index_finder(hexdump, shdr_named);
-
   //? Reading section content if had data
   if (idx > 0 && idx < shdr_named->shnum && shdr_named->shdr[idx].sh_size > 0)
   {
     // Allocation
-    section_content = calloc(1, shdr_named->shdr[idx].sh_size);
+    char *section_content = calloc(shdr_named->shdr[idx].sh_size, sizeof(char));
 
     //$ Read section
     fseek(filename, shdr_named->shdr[idx].sh_offset, SEEK_SET);
-    fread(section_content, 1, shdr_named->shdr[idx].sh_size, filename);
+    fread(section_content, sizeof(char), shdr_named->shdr[idx].sh_size, filename);
+
+    return section_content;
   }
   else if (shdr_named->shdr[idx].sh_size == 0) //! No data
   {
-    if (shdr_named->names[idx])
+    if (shdr_named->names[idx] != NULL)
       printf("Section '%s' has no data to dump.\n", shdr_named->names[idx]);
     else
       printf("Section '' has no data to dump.\n");
@@ -329,7 +329,7 @@ int section_content_read(Exec_options *exec_op, FILE *filename, hexdump_option *
   else if ((idx >= shdr_named->shnum || idx < 0) && !hexdump->is_string)
     printf("readelf: Warning: Section %d was not dump because it doesn't exist!\n", hexdump->section_number);
 
-  return idx;
+  return NULL;
 }
 
 //? RELOCATION TABLE
@@ -559,13 +559,13 @@ void run(Exec_options *exec_op, char *files[], hexdump_option *hexdump)
         //* Section display
         if (exec_op->hexdump && shdr_named.shnum > 0)
         {
-          char *section_content = NULL;
-          int idx = section_content_read(exec_op, filename, hexdump, &shdr_named, section_content);
+          int idx = section_index_finder(hexdump, &shdr_named);
+          char *section_content = section_content_read(exec_op, filename, hexdump, &shdr_named, idx);
 
           if (section_content) //  Display section content
-          {
             print_section_content(&shdr_named, section_content, idx);
-          }
+          else
+            printf("readelf: Error when reading the section '%s'!\n", shdr_named.names[idx]);
 
           //$ Free allocation
           free(section_content);

@@ -14,5 +14,7 @@
 #include "loading.h"
 #include "saving.h"
 #include "verif_output_linker_no_modif.h"
+#include "relocations.h"
+#include "reorganization.h"
 
 #endif

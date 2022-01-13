@@ -124,12 +124,22 @@ int sym_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_named *symn, b
 
 bool is_section_code(Elf32_Shdr_named *shdrn, int i)
 {
-  return (shdrn->shdr[i].sh_type != SHT_NULL /* && shdrn->shdr[i].sh_type != SHT_REL */);
+  return (shdrn->shdr[i].sh_type != SHT_NULL);
+}
+
+bool is_symtab_type(Elf32_Shdr_named *shdrn, int i)
+{
+    return shdrn->shdr[i].sh_type == SHT_SYMTAB;
+}
+
+bool is_rel_type(Elf32_Shdr_named *shdrn, int i)
+{
+  return shdrn->shdr[i].sh_type == SHT_REL;
 }
 
 bool is_strtab_type(Elf32_Shdr_named *shdrn, int i)
 {
-    return shdrn->shdr[i].sh_type == SHT_SYMTAB;
+  return shdrn->shdr[i].sh_type == SHT_STRTAB;
 }
 
 Elf32_stct_list section_content_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_stct_list cargo)
@@ -138,7 +148,7 @@ Elf32_stct_list section_content_storage(char *content, Elf32_Shdr_named *shdrn, 
   {
     if (is_section_code(shdrn, i))
     {
-      cargo = section_container_adder(cargo, content + shdrn->shdr[i].sh_offset, shdrn->names[i], shdrn->shdr[i].sh_size, is_strtab_type(shdrn, i), shdrn->shdr[i].sh_offset, shdrn->shdr[i].sh_addralign);
+      cargo = section_container_adder(cargo, content + shdrn->shdr[i].sh_offset, shdrn->names[i], shdrn->shdr[i].sh_size, is_symtab_type(shdrn, i), is_rel_type(shdrn, i), is_strtab_type(shdrn, i), shdrn->shdr[i].sh_offset, shdrn->shdr[i].sh_addralign, i);
     }
   }
   return cargo;
@@ -156,10 +166,10 @@ Elf32_Rel_named *rel_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_n
     if (shdrn->shdr[i].sh_type == SHT_REL)
       ++(*nb_rel);
   }
-
+  ++(*nb_rel);
   if (*nb_rel > 0)
   {
-    reln = calloc(*nb_rel, sizeof(Elf32_Rel_named));
+    reln = calloc((*nb_rel)--, sizeof(Elf32_Rel_named));
 
     for (int i = 0; i < shdrn->shnum; i++)
     {
@@ -174,7 +184,7 @@ Elf32_Rel_named *rel_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_n
 
         for (int j = 0; j < reln[rel_idx].rel_num; j++)
         {
-          memcpy(&reln[rel_idx].rel[j], content + shdrn->shdr[i].sh_offset, sizeof(Elf32_Rel));
+          memcpy(&reln[rel_idx].rel[j], content + shdrn->shdr[i].sh_offset + j * sizeof(Elf32_Rel), sizeof(Elf32_Rel));
 
           if (is_big_endian)
             rel_section_endianess(&reln[rel_idx].rel[j]);
@@ -193,42 +203,6 @@ Elf32_Rel_named *rel_storage(char *content, Elf32_Shdr_named *shdrn, Elf32_Sym_n
     }
   }
   return reln;
-}
-
-void free_elf32_file(Elf32_file *elf)
-{
-  //$ Header
-  free(elf->ehdr);
-  elf->eh_size = 0;
-
-  //$ Section headers
-  for (int i = 0; i < elf->shdrn->shnum; i++)
-    free(elf->shdrn->names[i]);
-  free(elf->shdrn->names);
-  free(elf->shdrn->shdr);
-  free(elf->shdrn);
-  elf->sh_size = 0;
-
-  //$ Table of Symbols
-  for (int i = 0; i < elf->symn->sym_num; i++)
-    free(elf->symn->names[i]);
-  free(elf->symn->names);
-  free(elf->symn->sym);
-  free(elf->symn);
-
-  //$ Relocation Tables
-  for (int i = 0; i < elf->nb_rel; i++)
-  {
-    for (int j = 0; j < elf->reln[i].rel_num; j++)
-      free(elf->reln[i].names[j]);
-    free(elf->reln[i].sym_val);
-    free(elf->reln[i].names);
-    free(elf->reln[i].rel);
-  }
-  free(elf->reln);
-
-  //$ Sections content
-  sections_list_destroyer(elf->sections_array);
 }
 
 void storage_elf_content(char *content, Elf32_file *elf)

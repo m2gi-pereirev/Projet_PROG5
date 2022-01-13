@@ -139,7 +139,7 @@ void symbole_table_elf(Exec_options *exec_op, FILE *filename, Elf32_Shdr_named *
  * @param *section_content String containing the data of the section
  * @return int Returns the number of blocks read in the section (in bytes)
  */
-int section_content_read(Exec_options *exec_op, FILE *filename, hexdump_option *hexdump, Elf32_Shdr_named *shdr_named, char *section_content);
+char *section_content_read(Exec_options *exec_op, FILE *filename, hexdump_option *hexdump, Elf32_Shdr_named *shdr_named, int idx);
 
 //*--------------------------------------------------------------------------------------------------
 //* FREE

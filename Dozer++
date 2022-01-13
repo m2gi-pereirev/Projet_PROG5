@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd linker/
+make clean
+make
+cd../readelf
+make clean
+make
+

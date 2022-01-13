@@ -2,6 +2,7 @@
 
 void bab(FILE *f1, FILE *f2)
 {
+  int error = 0;
   char c1, c2;
   long int bit_number = 0;
 
@@ -13,11 +14,12 @@ void bab(FILE *f1, FILE *f2)
 
     if (c1 != c2)
     {
-      printf("Erreur au bit numéro: %ld: 0x%lx\n", bit_number, bit_number);
-      exit(EXIT_FAILURE);
+      fprintf(stderr, "  erreur au bit numéro: %ld: 0x%lx | %02hhx | %02hhx\n", bit_number, bit_number, c1, c2);
+      error = 1;
     }
   }
-  printf("Les deux fichiers sont parfaitement identique au bit près !\n");
+  if (!error)
+    fprintf(stderr, "  les deux fichiers sont parfaitement identique au bit près !\n");
 }
 
 void verif(char *file1, char *file2)
@@ -27,7 +29,7 @@ void verif(char *file1, char *file2)
   f1 = fopen(file1, "rb");
   f2 = fopen(file2, "rb");
 
-  printf("Comparaison des fichiers %s et %s:\n", "test.o", "test/example1.o");
+  fprintf(stderr, "Comparaison des fichiers %s et %s:\n", "test.o", "test/example1.o");
 
   // Comparaison des fichiers bits à bits
   bab(f1, f2);

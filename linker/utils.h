@@ -17,9 +17,9 @@ typedef struct Section_headers_named
 
 typedef struct Symbols_table_named
 {
-  int sym_num;    // Number of section headers
-  char **names;   // Names of sections headers
-  Elf32_Sym *sym; // Content of section headers
+  int sym_num;    // Number of symbols table
+  char **names;   // Names of symbols
+  Elf32_Sym *sym; // Content of symbols table
 } Elf32_Sym_named;
 
 typedef struct Rel_section_named
@@ -36,7 +36,10 @@ typedef struct Rel_section_named
 typedef struct Elf32_stct_item Elf32_stct_item;
 struct Elf32_stct_item
 {
-  bool strtab_type;             // true if is strtab type section
+  bool symtab;                  // true if it's symtab type section
+  bool rel;                     // true if it's relocation table section
+  bool strtab;                  //true if it's strtab section
+  int idx;                      //
   int size;                     // Size of the section
   uint32_t offset;              //
   uint32_t align;               //
