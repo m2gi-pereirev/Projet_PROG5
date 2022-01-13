@@ -12,5 +12,5 @@
   - Réimplantation de type R ARM JUMP24 et R ARM CALL ;
   
 **Fonctionnalités manquantes :**<br>
- Interfacage avec le simulateur ARM ;<br>
- Production d’un fichier exécutable non relogeable.
+ - Interfacage avec le simulateur ARM ;<br>
+ - Production d’un fichier exécutable non relogeable.
